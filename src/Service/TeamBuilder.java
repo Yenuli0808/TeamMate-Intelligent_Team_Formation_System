@@ -38,7 +38,8 @@ public class TeamBuilder {
         for(int i=0; i<teamCount; i++){
             String teamId = "T" + (i+1);
             String teamName = "Team" + (i+1);
-            teams.add(new Team(teamId,teamName,teamSize));
+            List<Participant> emptyMembers = new ArrayList<>();
+            teams.add(new Team(teamId,teamName,emptyMembers,teamSize));
         }
         return teams;
     }
