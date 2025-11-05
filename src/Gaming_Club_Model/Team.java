@@ -1,4 +1,124 @@
 package Gaming_Club_Model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Represents a team with participants
+ */
+
 public class Team {
+    private String teamId;
+    private String teamName;
+    private List<Participant> members;
+    private int maxSize;
+
+    public Team(String teamId, String teamName, List<Participant> members, int maxSize) {
+        this.teamId = teamId;
+        this.teamName = teamName;
+        this.maxSize = maxSize;
+        this.members = new ArrayList<>();
+    }
+
+    public boolean addMember(Participant participant) {
+        if(members.size() >= maxSize) {
+            throw new IllegalArgumentException("Team is already at maximum capacity");
+        }
+        if(members.contains(participant)) {
+            throw new IllegalArgumentException("Participant already exists");
+        }
+        return members.add(participant);
+    }
+
+    public double getAverageSkill(){
+        if(members.isEmpty())
+            return 0.0;
+        int total = 0;
+        for(Participant member: members){
+            total += member.getSkillLevel();
+        }
+        return (double)total/members.size();
+    }
+
+    public List<String> getUniqueGames(){
+        List<String> games = new ArrayList<>();
+        for(Participant member: members){
+            String game = member.getPreferredGame();
+            if(!games.contains(game)){
+                games.add(game);
+            }
+        }
+        return games;
+    }
+
+    public List<String> getUniqueRoles(){
+        List<String> roles = new ArrayList<>();
+        for(Participant member: members){
+            String role = member.getPreferredRole();
+            if(!roles.contains(role)){
+                roles.add(role);
+            }
+        }
+        return roles;
+    }
+
+    public int countPersonalityType(PersonalityType type){
+        int count = 0;
+        for(Participant member: members){
+            if(members.getPersonalityType()==type){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public String getTeamId() {
+        return teamId;
+    }
+    public String getTeamName() {
+        return teamName;
+    }
+    public List<Participant> getMembers() {
+        return members;
+    }
+    public int getCurrentSize() {
+        return members.size();
+    }
+    public int getMaxSize() {
+        return maxSize;
+    }
+    public boolean isFull() {
+        return members.size() >= maxSize;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Team{id='%s', name='%s',size=%d/%d, avgSkill=%.2f}", teamId, teamName, members.size(), maxSize, this.getAverageSkill());
+    }
+
+    /*Detailed Info **/
+    public String getTeamDetails(){
+        StringBuilder details = new StringBuilder();
+        details.append("===").append(teamName).append("===\n");
+        details.append("ID: ").append(teamId).append("\n");
+        details.append("Size:").append(members.size()).append("\n").append(maxSize).append("\n");
+        details.append("Average Skill: ").append(String.format("%.2f", this.getAverageSkill())).append("\n");
+        details.append("Games: ").append(getUniqueGames()).append("\n");
+        details.append("Roles: ").append(getUniqueRoles()).append("\n");
+        details.append("Personalities:\n");
+        details.append("Leader: ").append(countPersonalityType(PersonalityType.LEADER)).append("\n");
+        details.append("Balanced: ").append(countPersonalityType(PersonalityType.BALANCED)).append("\n");
+        details.append("Thinkers:").append(countPersonalityType(PersonalityType.THINKER)).append("\n");
+
+        details.append("Members:\n");
+        for(Participant member: members){
+            details.append(" _ ").append(member.getName())
+                    .append(" (").append(member.getPreferredGame())
+                    .append(" - ").append(member.getPreferredRole())
+                    .append("-Skill: ").append(member.getSkillLevel())
+                    .append(")\n");
+        }
+        return details.toString();
+    }
+
 }
