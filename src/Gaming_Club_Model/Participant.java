@@ -1,5 +1,7 @@
 package Gaming_Club_Model;
 
+import Service.PersonalityClassifier;
+
 /**
  * Represents a gaming club participant with personal attributes,
  * gaming preferences, and personality traits.
@@ -34,7 +36,7 @@ public class Participant {
         this.skillLevel = skillLevel;
         this.preferredRole = preferredRole;
         this.personalityScore = personalityScore;
-        this.personalityType=PersonalityClassifier.classify(personalityScore);
+        this.personalityType= PersonalityClassifier.classify(personalityScore);
     }
 
     public String getId() {
