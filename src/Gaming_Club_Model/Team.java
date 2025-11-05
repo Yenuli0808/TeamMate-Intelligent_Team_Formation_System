@@ -17,7 +17,7 @@ public class Team {
         this.teamId = teamId;
         this.teamName = teamName;
         this.maxSize = maxSize;
-        this.members = new ArrayList<>(members);
+        this.members = new ArrayList<>();
     }
 
     public boolean addMember(Participant participant) {
@@ -96,7 +96,7 @@ public class Team {
         return String.format("Team{id='%s', name='%s',size=%d/%d, avgSkill=%.2f}", teamId, teamName, members.size(), maxSize, this.getAverageSkill());
     }
 
-    /*Detailed Info **/
+    /*Detailed information**/
     public String getTeamDetails(){
         StringBuilder details = new StringBuilder();
         details.append("===").append(teamName).append("===\n");
