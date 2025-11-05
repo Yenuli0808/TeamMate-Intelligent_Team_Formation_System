@@ -1,23 +1,28 @@
 package Gaming_Club_Model;
 
 import java.util.ArrayList;
+import Service.Formattable;
 import java.util.List;
 
 /**
  * Represents a team with participants
  */
 
-public class Team {
-    private String teamId;
-    private String teamName;
+public class Team extends BaseEntity implements Formattable {
     private List<Participant> members;
     private int maxSize;
 
-    public Team(String teamId, String teamName, List<Participant> members, int maxSize) {
-        this.teamId = teamId;
-        this.teamName = teamName;
+    public Team(String teamId, String teamName, int maxSize) {
+        super(teamId, teamName);
         this.maxSize = maxSize;
-        this.members = new ArrayList<>(members);
+        this.members = new ArrayList<>();
+    }
+
+    @Override
+    public String toFormattedString() {
+        return String.format("Team %s: %s (%d/%d members) | Avg Skill: %.1f | Games: %s | Roles: %s",
+                id, name, members.size(), maxSize, getAverageSkill(),
+                getUniqueGames(), getUniqueRoles());
     }
 
     public boolean addMember(Participant participant) {
@@ -30,14 +35,27 @@ public class Team {
         return members.add(participant);
     }
 
-    public double getAverageSkill(){
-        if(members.isEmpty())
-            return 0.0;
-        int total = 0;
-        for(Participant member: members){
-            total += member.getSkillLevel();
+    @Override
+    public boolean validate() {
+        return id != null && !id.isEmpty() &&
+                name != null && !name.isEmpty() && maxSize >= 2;
+    }
+
+    @Override
+    public String toCSVFormat(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(id).append(",").append(name).append(",");
+        for (Participant member : members) {
+            sb.append(member.getId()).append(";");
         }
-        return (double)total/members.size();
+        return sb.toString();
+    }
+
+    public double getAverageSkill() {
+        if (members.isEmpty())
+            return 0.0;
+        int total = members.stream().mapToInt(Participant::getSkillLevel).sum();
+        return (double) total / members.size();
     }
 
     public List<String> getUniqueGames(){
@@ -72,14 +90,13 @@ public class Team {
         return count;
     }
 
-    public String getTeamId() {
-        return teamId;
+    public boolean isFull(){
+        return members.size() >= maxSize;
     }
-    public String getTeamName() {
-        return teamName;
-    }
+
+
     public List<Participant> getMembers() {
-        return members;
+        return new ArrayList<>(members);
     }
     public int getCurrentSize() {
         return members.size();
@@ -87,20 +104,17 @@ public class Team {
     public int getMaxSize() {
         return maxSize;
     }
-    public boolean isFull() {
-        return members.size() >= maxSize;
-    }
 
     @Override
     public String toString() {
-        return String.format("Team{id='%s', name='%s',size=%d/%d, avgSkill=%.2f}", teamId, teamName, members.size(), maxSize, this.getAverageSkill());
+        return String.format("Team{id='%s', name='%s',size=%d/%d, avgSkill=%.2f}", id, name, members.size(), maxSize,this.getAverageSkill());
     }
 
     /*Detailed information**/
     public String getTeamDetails(){
         StringBuilder details = new StringBuilder();
-        details.append("===").append(teamName).append("===\n");
-        details.append("ID: ").append(teamId).append("\n");
+        details.append("===").append(name).append("===\n");
+        details.append("ID: ").append(id).append("\n");
         details.append("Size:").append(members.size()).append("\n").append(maxSize).append("\n");
         details.append("Average Skill: ").append(String.format("%.2f", this.getAverageSkill())).append("\n");
         details.append("Games: ").append(getUniqueGames()).append("\n");
@@ -111,12 +125,8 @@ public class Team {
         details.append("Thinkers:").append(countPersonalityType(PersonalityType.THINKER)).append("\n");
 
         details.append("Members:\n");
-        for(Participant member: members){
-            details.append(" _ ").append(member.getName())
-                    .append(" (").append(member.getPreferredGame())
-                    .append(" - ").append(member.getPreferredRole())
-                    .append("-Skill: ").append(member.getSkillLevel())
-                    .append(")\n");
+        for (Participant member : members) {
+            details.append(" - ").append(member.toFormattedString()).append("\n");
         }
         return details.toString();
     }
