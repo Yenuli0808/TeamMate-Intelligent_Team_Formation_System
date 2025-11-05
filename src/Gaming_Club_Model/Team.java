@@ -17,7 +17,7 @@ public class Team {
         this.teamId = teamId;
         this.teamName = teamName;
         this.maxSize = maxSize;
-        this.members = new ArrayList<>();
+        this.members = new ArrayList<>(members);
     }
 
     public boolean addMember(Participant participant) {
@@ -65,7 +65,7 @@ public class Team {
     public int countPersonalityType(PersonalityType type){
         int count = 0;
         for(Participant member: members){
-            if(members.getPersonalityType()==type){
+            if(member.getPersonalityType()==type){
                 count++;
             }
         }
