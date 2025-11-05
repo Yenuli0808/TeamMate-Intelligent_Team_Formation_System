@@ -6,7 +6,7 @@ import Gaming_Club_Model.Team;
 
 import java.util.*;
 
-public class TeamBuilder {
+public class TeamBuilder implements TeamFormationStrategy {
     private int teamSize;
     private List<Participant> participants;
 
@@ -20,6 +20,16 @@ public class TeamBuilder {
 
         this.participants=new ArrayList<>(participants);
         this.teamSize=teamSize;
+    }
+
+    @Override
+    public List<Team> formTeams(){
+        return formBalancedTeams();
+    }
+
+    @Override
+    public String getStrategyName() {
+        return "Skill-Balanced Team Formation";
     }
 
     public List<Team> formBalancedTeams(){
@@ -39,7 +49,7 @@ public class TeamBuilder {
             String teamId = "T" + (i+1);
             String teamName = "Team" + (i+1);
             List<Participant> emptyMembers = new ArrayList<>();
-            teams.add(new Team(teamId,teamName,emptyMembers,teamSize));
+            teams.add(new Team(teamId,teamName,teamSize));
         }
         return teams;
     }
@@ -91,7 +101,7 @@ public class TeamBuilder {
         System.out.println("\n===Team Balance Report===");
 
         for(Team team: teams){
-            System.out.println("\n" +team.getTeamName() + ":");
+            System.out.println("\n" +team.getName() + ":");
             System.out.println("Size: "+team.getCurrentSize() + "/" + team.getMaxSize());
             System.out.println("Average Skill: "+ String.format("%.2f",team.getAverageSkill()));
 
