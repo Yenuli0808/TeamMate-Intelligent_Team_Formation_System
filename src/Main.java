@@ -2,8 +2,10 @@ import Gaming_Club_Model.Participant;
 import Gaming_Club_Model.Team;
 import Service.PersonalityClassifier;
 import Service.TeamBuilder;
+import Service.TeamFormationStrategy;
 
 import java.util.Arrays;
+import Service.Formattable;
 import java.util.List;
 
 public class Main{
@@ -14,9 +16,11 @@ public class Main{
         demonstratePersonalityClassification();
         demonstrateParticipantCreation();
         demonstrateTeamFormation();
+        demonstrateInterfaces();
 
         System.out.println("\n=== Core Logic Implementation Complete ===");
     }
+
 
     private static void demonstratePersonalityClassification(){
         System.out.println("1. PERSONALITY CLASSIFICATION DEMONSTRATION");
@@ -82,5 +86,32 @@ public class Main{
             System.out.println("✗ Error in team formation: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private static void demonstrateInterfaces(){
+        System.out.println("4. INTERFACES DEMONSTRATION");
+        System.out.println("--------------------------------------");
+
+        List<Participant> participants = Arrays.asList(
+                new Participant("P001", "Alice", "alice@edu.com", "Valorant", 8, "Strategist", 95),
+                new Participant("P002", "Bob", "bob@edu.com", "CS:GO", 6, "Attacker", 75)
+        );
+
+        System.out.println("Formattable Interface Examples:");
+        for (Participant p : participants) {
+            displayFormattableObject(p);
+        }
+
+        TeamFormationStrategy strategy = new TeamBuilder(participants, 2);
+        System.out.println("\nTeamFormationStrategy: " + strategy.getStrategyName());
+        List<Team> teams = strategy.formTeams();
+
+        for (Team team : teams) {
+            displayFormattableObject(team);
+        }
+    }
+
+    private static void displayFormattableObject(Formattable obj){
+        System.out.println(" - " + obj.toFormattedString());
     }
 }
