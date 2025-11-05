@@ -1,6 +1,6 @@
 package Gaming_Club_Model;
 
-import Service.FormatTable;
+import Service.Formattable;
 import Service.PersonalityClassifier;
 
 /**
@@ -9,7 +9,7 @@ import Service.PersonalityClassifier;
  * Demonstrates encapsulation through private fields and public getters.
  */
 
-public class Participant extends BaseEntity implements FormatTable {
+public class Participant extends BaseEntity implements Formattable {
     private String email;
     private String preferredGame;
     private int skillLevel;
@@ -17,7 +17,9 @@ public class Participant extends BaseEntity implements FormatTable {
     private int personalityScore;
     private PersonalityType personalityType;
 
-    public  Participant(String id,String name,String email,String preferredGame,int skillLevel,String preferredRole,int personalityScore) {
+    public Participant(String id,String name,String email,String preferredGame,int skillLevel,String preferredRole,int personalityScore) {
+
+        super(id,name);
 
         if(skillLevel<1 || skillLevel>10){
             throw new IllegalArgumentException("Skill Level must be 1-10");
