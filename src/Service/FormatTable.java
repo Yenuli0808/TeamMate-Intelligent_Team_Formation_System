@@ -1,6 +1,6 @@
 package Service;
 
-public interface FormatTable {
+public interface Formattable {
     String toFormattedString();
     String toCSVFormat();
 }
