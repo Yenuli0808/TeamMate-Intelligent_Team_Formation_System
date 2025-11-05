@@ -1,5 +1,6 @@
 package Gaming_Club_Model;
 
+import Service.FormatTable;
 import Service.PersonalityClassifier;
 
 /**
@@ -8,9 +9,7 @@ import Service.PersonalityClassifier;
  * Demonstrates encapsulation through private fields and public getters.
  */
 
-public class Participant {
-    private String id;
-    private String name;
+public class Participant extends BaseEntity implements FormatTable {
     private String email;
     private String preferredGame;
     private int skillLevel;
@@ -19,9 +18,7 @@ public class Participant {
     private PersonalityType personalityType;
 
     public  Participant(String id,String name,String email,String preferredGame,int skillLevel,String preferredRole,int personalityScore) {
-        if (id==null || id.isEmpty()){
-            throw new IllegalArgumentException("ID cannot be empty");
-        }
+
         if(skillLevel<1 || skillLevel>10){
             throw new IllegalArgumentException("Skill Level must be 1-10");
         }
@@ -29,8 +26,6 @@ public class Participant {
             throw new IllegalArgumentException("Personal Score must be between 0 and 100");
         }
 
-        this.id = id;
-        this.name = name;
         this.email = email;
         this.preferredGame = preferredGame;
         this.skillLevel = skillLevel;
@@ -39,12 +34,24 @@ public class Participant {
         this.personalityType= PersonalityClassifier.classify(personalityScore);
     }
 
-    public String getId() {
-        return id;
+    @Override
+    public boolean validate() {
+        return id !=null && !id.isEmpty() && name != null && !name.isEmpty() && skillLevel >=1 && skillLevel<=10;
     }
-    public String getName() {
-        return name;
+
+    @Override
+    public String toFormattedString() {
+        return String.format("%s - %s (%s) | Skill: %d | Role: %s | Type: %s",
+                id, name, preferredGame, skillLevel, preferredRole, personalityType);
+
     }
+
+    @Override
+    public String toCSVFormat() {
+        return String.format("%s,%s,%s,%s,%d,%s,%d,%s",
+                id, name, email, preferredGame, skillLevel, preferredRole, personalityScore, personalityType);
+    }
+
     public String getEmail() {
         return email;
     }
