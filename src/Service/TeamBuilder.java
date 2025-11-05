@@ -116,4 +116,145 @@ public class TeamBuilder implements TeamFormationStrategy {
         }
 
     }
+
+    public List<Team> formAdvancedTeams(){
+        int teamCount = (int) Math.ceil((double) participants.size()/teamSize);
+        List<Team> teams = createEmptyTeams(teamCount);
+
+        System.out.println("Applying 3 Simple Rules:");
+        System.out.println("1. One leader per team");
+        System.out.println("2. Max 2 players from same game");
+        System.out.println("3. Prefer different roles");
+
+        addLeadersFirst(teams);
+        addRemainingPlayers(teams);
+
+        return teams;
+    }
+
+    private void addLeadersFirst(List<Team> teams){
+        //to find all leaders
+        List<Participant> leaders = new ArrayList<>();
+        for( Participant p: participants){
+            if(p.getPersonalityType() == PersonalityType.LEADER){
+                leaders.add(p);
+            }
+        }
+
+        //This will put one leader in each team if possible
+        int teamIndex = 0;
+        for (Participant leader: leaders){
+            if(teamIndex < teams.size() && ! teams.get(teamIndex).isFull()){
+                teams.get(teamIndex).addMember(leader);
+                teamIndex++;
+            }
+        }
+    }
+
+    private void addRemainingPlayers(List<Team> teams){
+        //to get all non leader participants
+        List<Participant> remaining = new ArrayList<>();
+        for( Participant p: participants){
+            if(!isAnyTeam(teams,p)){
+                remaining.add(p);
+            }
+        }
+
+        //adding them to teams
+        for(Participant player: remaining){
+            Team bestTeam = findTeamWithConstraints(teams,player);
+            if(bestTeam != null){
+                bestTeam.addMember(player);
+            }
+        }
+    }
+
+    private Team findTeamWithConstraints(List<Team> teams, Participant player){
+        // Rule 1: Find team without this game
+        for (Team team : teams) {
+            if (!team.isFull() && countSameGame(team, player) < 2) {
+                if (countSameGame(team, player) == 0) {
+                    return team; // Perfect - no same game players
+                }
+            }
+        }
+
+        // Rule 2: Find team without this role
+        for (Team team : teams) {
+            if (!team.isFull() && countSameGame(team, player) < 2) {
+                if (!hasSameRole(team, player)) {
+                    return team; // Good - no same role players
+                }
+            }
+        }
+
+        // Rule 3: Any team that follows basic constraints
+        for (Team team : teams) {
+            if (!team.isFull() && countSameGame(team, player) < 2) {
+                return team;
+            }
+        }
+
+        // Last resort: Any team with space
+        for (Team team : teams) {
+            if (!team.isFull()) {
+                return team;
+            }
+        }
+        return null;
+    }
+
+    private int countSameGame(Team team, Participant player) {
+        int count = 0;
+        for (Participant member : team.getMembers()) {
+            if (member.getPreferredGame().equals(player.getPreferredGame())) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private boolean hasSameRole(Team team, Participant player) {
+        for (Participant member : team.getMembers()) {
+            if (member.getPreferredRole().equals(player.getPreferredRole())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isAnyTeam(List<Team> teams, Participant player) {
+        for (Team team : teams) {
+            if (team.getMembers().contains(player)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void printAdvancedReport(List<Team> teams) {
+        System.out.println("\n=== ADVANCED TEAM REPORT ===");
+        System.out.println("Applied: 1 Leader max, Game variety, Role diversity");
+
+        for (Team team : teams) {
+            System.out.println("\n" + team.getName() + ":");
+            System.out.println("  Players: " + team.getCurrentSize() + "/" + team.getMaxSize());
+            System.out.println("  Avg Skill: " + String.format("%.1f", team.getAverageSkill()));
+
+            int leaders = team.countPersonalityType(PersonalityType.LEADER);
+            int balanced = team.countPersonalityType(PersonalityType.BALANCED);
+            int thinkers = team.countPersonalityType(PersonalityType.THINKER);
+            System.out.println("  Personalities: " + leaders + "L " + balanced + "B " + thinkers + "T");
+
+            System.out.println("  Games: " + team.getUniqueGames());
+            System.out.println("  Roles: " + team.getUniqueRoles());
+
+            System.out.print("  Constraints: ");
+            System.out.print(leaders <= 1 ? "✓Leader " : "✗Leader ");
+            System.out.print(team.getUniqueGames().size() >= 2 ? "✓Games " : "✗Games ");
+            System.out.print(team.getUniqueRoles().size() >= 2 ? "✓Roles" : "✗Roles");
+            System.out.println();
+        }
+    }
+
 }
