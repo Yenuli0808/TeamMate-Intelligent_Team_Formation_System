@@ -17,7 +17,7 @@ public class Team {
         this.teamId = teamId;
         this.teamName = teamName;
         this.maxSize = maxSize;
-        this.members = new ArrayList<>();
+        this.members = new ArrayList<>(members);
     }
 
     public boolean addMember(Participant participant) {
