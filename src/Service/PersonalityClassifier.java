@@ -15,19 +15,18 @@ public class PersonalityClassifier {
         }
     }
 
-    public static int calculateScore(int[] surveyResponses){
-        if(surveyResponses == null || surveyResponses.length != 5 ){
-            throw  new IllegalArgumentException("Need exactly 5 survey responses");
+    public static int calculateFromSurvey(int[] responses) {
+        if(responses.length != 5) {
+            throw new IllegalArgumentException("Need 5 responses");
         }
-
-        int total=0;
-        for (int response: surveyResponses){
-            if(response <1 || response >5){
-                throw  new IllegalArgumentException("Survey responses must be between 1-5, got: %d"+response);
+        int sum = 0;
+        for(int r : responses) {
+            if(r < 1 || r > 5) {
+                throw new IllegalArgumentException("Responses must be 1-5");
             }
-            total+=response;
+            sum += r;
         }
-        return total *4;
+        return sum * 4; // Scale to 100
     }
 
 
