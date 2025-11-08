@@ -41,6 +41,7 @@ public class Participant extends BaseEntity implements Formattable {
         return id !=null && !id.isEmpty() && name != null && !name.isEmpty() && skillLevel >=1 && skillLevel<=10;
     }
 
+
     @Override
     public String toFormattedString() {
         return String.format("%s - %s (%s) | Skill: %d | Role: %s | Type: %s",
@@ -52,6 +53,16 @@ public class Participant extends BaseEntity implements Formattable {
     public String toCSVFormat() {
         return String.format("%s,%s,%s,%s,%d,%s,%d,%s",
                 id, name, email, preferredGame, skillLevel, preferredRole, personalityScore, personalityType);
+    }
+
+    @Override
+    public String toDetailedString() {
+        return "";
+    }
+
+    @Override
+    public String toDisplayString() {
+        return "";
     }
 
     public String getEmail() {
