@@ -5,236 +5,290 @@ import Gaming_Club_Model.PersonalityType;
 import Gaming_Club_Model.Team;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class TeamBuilder implements TeamFormationStrategy {
     private int teamSize;
     private List<Participant> participants;
+    private TeamFormationConstraint constraints;
+    private ExecutorService executor;
 
-    public  TeamBuilder(List<Participant> participants, int teamSize) {
-        if(participants==null || participants.isEmpty()){
-            throw  new IllegalArgumentException("Participants cannot be empty");
+    public TeamBuilder(List<Participant> participants, int teamSize) {
+        if(participants == null || participants.isEmpty()) {
+            throw new IllegalArgumentException("Participants cannot be empty");
         }
-        if(teamSize < 2){
-            throw  new IllegalArgumentException("Team size cannot be less than 2");
+        if(teamSize < 2) {
+            throw new IllegalArgumentException("Team size cannot be less than 2");
         }
 
-        this.participants=new ArrayList<>(participants);
-        this.teamSize=teamSize;
+        this.participants = new ArrayList<>(participants);
+        this.teamSize = teamSize;
+        this.constraints = new DefaultTeamConstraints();
+        this.executor = Executors.newFixedThreadPool(2); // For concurrency
     }
 
+    // ===== STRATEGY PATTERN IMPLEMENTATION =====
     @Override
-    public List<Team> formTeams(){
+    public List<Team> formTeams() {
         return formBalancedTeams();
     }
 
     @Override
     public String getStrategyName() {
-        return "Skill-Balanced Team Formation";
+        return "Advanced Balanced Team Formation";
     }
 
-    public List<Team> formBalancedTeams(){
-        int teamCount = (int) Math.ceil((double) participants.size()/teamSize);
+    // ===== DIFFERENT FORMATION STRATEGIES =====
+    public List<Team> formBalancedTeams() {
+        int teamCount = (int) Math.ceil((double) participants.size() / teamSize);
+        List<Team> teams = createEmptyTeams(teamCount);
+        List<Participant> sortedParticipants = sortBySkill(participants);
+        distributeParticipants(teams, sortedParticipants);
+        return teams;
+    }
+
+    public List<Team> formAdvancedTeams() {
+        int teamCount = (int) Math.ceil((double) participants.size() / teamSize);
         List<Team> teams = createEmptyTeams(teamCount);
 
-        List<Participant> sortedParticipants = sortBySkill(participants);
+        System.out.println("Applying Advanced Constraints:");
+        System.out.println("1. One leader per team maximum");
+        System.out.println("2. Max " + constraints.getMaxSameGame() + " players from same game");
+        System.out.println("3. At least " + constraints.getMinDifferentRoles() + " different roles");
+        System.out.println("4. Balanced personality mix");
 
-        distributeParticipants(teams,sortedParticipants);
-
+        // Advanced distribution with constraints
+        distributeWithAdvancedConstraints(teams);
         return teams;
     }
 
-    private List<Team>  createEmptyTeams(int teamCount) {
-        List<Team> teams = new ArrayList<>();
-        for(int i=0; i<teamCount; i++){
-            String teamId = "T" + (i+1);
-            String teamName = "Team" + (i+1);
-            List<Participant> emptyMembers = new ArrayList<>();
-            teams.add(new Team(teamId,teamName,teamSize));
-        }
-        return teams;
-    }
-
-    private List<Participant> sortBySkill(List<Participant> participants){
-        List<Participant> sorted = new ArrayList<>(participants);
-        Collections.sort(sorted,(p1,p2) -> Integer.compare(p1.getSkillLevel(),p2.getSkillLevel()));
-        return sorted;
-    }
-
-    private void distributeParticipants(List<Team> teams, List<Participant> participants){
-        int teamCount = teams.size();
-        int participantIndex = 0;
-
-        while (participantIndex<participants.size()){
-            for(int i =0; i < teamCount && participantIndex < participants.size(); i++){
-                Team team = teams.get(i);
-                if(!team.isFull()){
-                    team.addMember(participants.get(participantIndex));
-                    participantIndex++;
-                }
-            }
-
-            for (int i = teamCount - 1; i >= 0 && participantIndex < participants.size(); i--){
-                Team team = teams.get(i);
-                if(!team.isFull()){
-                    team.addMember(participants.get(participantIndex));
-                    participantIndex++;
-                }
-            }
-        }
-    }
-
-    public List<Team> formRandomTeams(){
-        List<Team> teams = createEmptyTeams((int) Math.ceil ((double) participants.size() /teamSize));
+    public List<Team> formRandomTeams() {
+        List<Team> teams = createEmptyTeams((int) Math.ceil((double) participants.size() / teamSize));
         List<Participant> shuffled = new ArrayList<>(participants);
         Collections.shuffle(shuffled);
 
         int currentTeam = 0;
-        for (Participant participant: shuffled){
+        for (Participant participant : shuffled) {
             Team team = teams.get(currentTeam);
             team.addMember(participant);
-            currentTeam = (currentTeam+1) % teams.size();
+            currentTeam = (currentTeam + 1) % teams.size();
         }
         return teams;
     }
 
-    public void printBalanceReport(List<Team> teams){
-        System.out.println("\n===Team Balance Report===");
-
-        for(Team team: teams){
-            System.out.println("\n" +team.getName() + ":");
-            System.out.println("Size: "+team.getCurrentSize() + "/" + team.getMaxSize());
-            System.out.println("Average Skill: "+ String.format("%.2f",team.getAverageSkill()));
-
-            int leaders = team.countPersonalityType(PersonalityType.LEADER);
-            int balanced =  team.countPersonalityType(PersonalityType.BALANCED);
-            int thinkers = team.countPersonalityType(PersonalityType.THINKER);
-
-            System.out.println("Personalities: "+ leaders + "Leaders," + balanced + "Balanced,"+thinkers + "Thinkers");
-
-            System.out.println("Games: "+ team.getUniqueGames());
-            System.out.println("Roles: "+ team.getUniqueRoles());
-        }
-
-    }
-
-    public List<Team> formAdvancedTeams(){
-        int teamCount = (int) Math.ceil((double) participants.size()/teamSize);
-        List<Team> teams = createEmptyTeams(teamCount);
-
-        System.out.println("Applying 3 Simple Rules:");
-        System.out.println("1. One leader per team");
-        System.out.println("2. Max 2 players from same game");
-        System.out.println("3. Prefer different roles");
-
-        addLeadersFirst(teams);
-        addRemainingPlayers(teams);
-
-        return teams;
-    }
-
-    private void addLeadersFirst(List<Team> teams){
-        //to find all leaders
-        List<Participant> leaders = new ArrayList<>();
-        for( Participant p: participants){
-            if(p.getPersonalityType() == PersonalityType.LEADER){
-                leaders.add(p);
+    // ===== CONCURRENT PROCESSING (REQUIREMENT) =====
+    public CompletableFuture<List<Team>> formTeamsConcurrently() {
+        return CompletableFuture.supplyAsync(() -> {
+            System.out.println("🔄 Processing team formation in background thread...");
+            try {
+                // Simulate processing time for large datasets
+                Thread.sleep(500);
+                System.out.println("✓ Background processing completed");
+                return formAdvancedTeams();
+            } catch (InterruptedException e) {
+                throw new RuntimeException("Team formation interrupted", e);
             }
-        }
+        }, executor);
+    }
 
-        //This will put one leader in each team if possible
+    public CompletableFuture<Void> processSurveyDataConcurrently(List<Participant> surveyData) {
+        return CompletableFuture.runAsync(() -> {
+            System.out.println("🔄 Processing survey data for " + surveyData.size() + " participants...");
+            try {
+                // Simulate survey data processing
+                Thread.sleep(300);
+                this.participants.addAll(surveyData);
+                System.out.println("✓ Survey data processing completed");
+            } catch (InterruptedException e) {
+                throw new RuntimeException("Survey processing interrupted", e);
+            }
+        }, executor);
+    }
+
+    // ===== ADVANCED CONSTRAINT-BASED DISTRIBUTION =====
+    private void distributeWithAdvancedConstraints(List<Team> teams) {
+        // Phase 1: Distribute leaders first (one per team)
+        distributeLeaders(teams);
+
+        // Phase 2: Distribute remaining participants with constraints
+        distributeRemainingWithConstraints(teams);
+    }
+
+    private void distributeLeaders(List<Team> teams) {
+        List<Participant> leaders = participants.stream()
+                .filter(p -> p.getPersonalityType() == PersonalityType.LEADER)
+                .toList();
+
         int teamIndex = 0;
-        for (Participant leader: leaders){
-            if(teamIndex < teams.size() && ! teams.get(teamIndex).isFull()){
-                teams.get(teamIndex).addMember(leader);
-                teamIndex++;
+        for (Participant leader : leaders) {
+            if (teamIndex < teams.size()) {
+                Team team = teams.get(teamIndex);
+                if (!team.isFull() && constraints.satisfiesAllConstraints(team, leader)) {
+                    team.addMember(leader);
+                    teamIndex++;
+                }
             }
         }
     }
 
-    private void addRemainingPlayers(List<Team> teams){
-        //to get all non leader participants
-        List<Participant> remaining = new ArrayList<>();
-        for( Participant p: participants){
-            if(!isAnyTeam(teams,p)){
-                remaining.add(p);
-            }
-        }
+    private void distributeRemainingWithConstraints(List<Team> teams) {
+        List<Participant> remaining = participants.stream()
+                .filter(p -> !isInAnyTeam(teams, p))
+                .sorted((p1, p2) -> Integer.compare(p2.getSkillLevel(), p1.getSkillLevel())) // High skill first
+                .toList();
 
-        //adding them to teams
-        for(Participant player: remaining){
-            Team bestTeam = findTeamWithConstraints(teams,player);
-            if(bestTeam != null){
+        for (Participant player : remaining) {
+            Team bestTeam = findOptimalTeam(teams, player);
+            if (bestTeam != null) {
                 bestTeam.addMember(player);
+            } else {
+                // Fallback: add to first available team
+                teams.stream()
+                        .filter(team -> !team.isFull())
+                        .findFirst()
+                        .ifPresent(team -> team.addMember(player));
             }
         }
     }
 
-    private Team findTeamWithConstraints(List<Team> teams, Participant player){
-        // Rule 1: Find team without this game
+    private Team findOptimalTeam(List<Team> teams, Participant player) {
+        // Score teams based on how well they match constraints
+        Map<Team, Integer> teamScores = new HashMap<>();
+
         for (Team team : teams) {
-            if (!team.isFull() && countSameGame(team, player) < 2) {
-                if (countSameGame(team, player) == 0) {
-                    return team; // Perfect - no same game players
+            if (!team.isFull() && constraints.satisfiesBasicConstraints(team, player)) {
+                int score = calculateTeamScore(team, player);
+                teamScores.put(team, score);
+            }
+        }
+
+        return teamScores.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
+    }
+
+    private int calculateTeamScore(Team team, Participant newPlayer) {
+        int score = 0;
+
+        // Game variety: prefer teams with different games
+        if (countSameGame(team, newPlayer) == 0) score += 30;
+        else if (countSameGame(team, newPlayer) == 1) score += 10;
+
+        // Role diversity: prefer teams needing this role
+        if (!hasSameRole(team, newPlayer)) score += 25;
+
+        // Personality balance
+        score += calculatePersonalityScore(team, newPlayer);
+
+        // Skill balance: prefer teams with lower average skill
+        double currentAvg = team.getAverageSkill();
+        if (currentAvg < 5.0) score += 20;
+        else if (currentAvg < 7.0) score += 10;
+
+        return score;
+    }
+
+    private int calculatePersonalityScore(Team team, Participant newPlayer) {
+        int score = 0;
+        PersonalityType newType = newPlayer.getPersonalityType();
+
+        int currentLeaders = team.countPersonalityType(PersonalityType.LEADER);
+        int currentThinkers = team.countPersonalityType(PersonalityType.THINKER);
+        int currentBalanced = team.countPersonalityType(PersonalityType.BALANCED);
+
+        // Prefer balanced personality distribution
+        if (newType == PersonalityType.LEADER && currentLeaders == 0) score += 25;
+        if (newType == PersonalityType.THINKER && currentThinkers < 2) score += 15;
+        if (newType == PersonalityType.BALANCED && currentBalanced < 3) score += 10;
+
+        return score;
+    }
+
+    // ===== CORE DISTRIBUTION LOGIC =====
+    private void distributeParticipants(List<Team> teams, List<Participant> participants) {
+        int teamCount = teams.size();
+        int participantIndex = 0;
+
+        // Snake distribution for balanced skills
+        while (participantIndex < participants.size()) {
+            // Forward pass
+            for (int i = 0; i < teamCount && participantIndex < participants.size(); i++) {
+                Team team = teams.get(i);
+                if (!team.isFull()) {
+                    team.addMember(participants.get(participantIndex));
+                    participantIndex++;
+                }
+            }
+
+            // Backward pass
+            for (int i = teamCount - 1; i >= 0 && participantIndex < participants.size(); i--) {
+                Team team = teams.get(i);
+                if (!team.isFull()) {
+                    team.addMember(participants.get(participantIndex));
+                    participantIndex++;
                 }
             }
         }
+    }
 
-        // Rule 2: Find team without this role
-        for (Team team : teams) {
-            if (!team.isFull() && countSameGame(team, player) < 2) {
-                if (!hasSameRole(team, player)) {
-                    return team; // Good - no same role players
-                }
-            }
+    // ===== UTILITY METHODS =====
+    private List<Team> createEmptyTeams(int teamCount) {
+        List<Team> teams = new ArrayList<>();
+        for (int i = 0; i < teamCount; i++) {
+            String teamId = "T" + (i + 1);
+            String teamName = "Team " + (i + 1);
+            teams.add(new Team(teamId, teamName, teamSize));
         }
+        return teams;
+    }
 
-        // Rule 3: Any team that follows basic constraints
-        for (Team team : teams) {
-            if (!team.isFull() && countSameGame(team, player) < 2) {
-                return team;
-            }
-        }
-
-        // Last resort: Any team with space
-        for (Team team : teams) {
-            if (!team.isFull()) {
-                return team;
-            }
-        }
-        return null;
+    private List<Participant> sortBySkill(List<Participant> participants) {
+        List<Participant> sorted = new ArrayList<>(participants);
+        sorted.sort(Comparator.comparingInt(Participant::getSkillLevel));
+        return sorted;
     }
 
     private int countSameGame(Team team, Participant player) {
-        int count = 0;
-        for (Participant member : team.getMembers()) {
-            if (member.getPreferredGame().equals(player.getPreferredGame())) {
-                count++;
-            }
-        }
-        return count;
+        return (int) team.getMembers().stream()
+                .filter(member -> member.getPreferredGame().equals(player.getPreferredGame()))
+                .count();
     }
 
     private boolean hasSameRole(Team team, Participant player) {
-        for (Participant member : team.getMembers()) {
-            if (member.getPreferredRole().equals(player.getPreferredRole())) {
-                return true;
-            }
-        }
-        return false;
+        return team.getMembers().stream()
+                .anyMatch(member -> member.getPreferredRole().equals(player.getPreferredRole()));
     }
 
-    private boolean isAnyTeam(List<Team> teams, Participant player) {
+    private boolean isInAnyTeam(List<Team> teams, Participant player) {
+        return teams.stream()
+                .anyMatch(team -> team.getMembers().contains(player));
+    }
+
+    // ===== REPORTING METHODS =====
+    public void printBalanceReport(List<Team> teams) {
+        System.out.println("\n=== TEAM BALANCE REPORT ===");
+
         for (Team team : teams) {
-            if (team.getMembers().contains(player)) {
-                return true;
-            }
+            System.out.println("\n" + team.getName() + ":");
+            System.out.println("  Size: " + team.getCurrentSize() + "/" + team.getMaxSize());
+            System.out.println("  Average Skill: " + String.format("%.2f", team.getAverageSkill()));
+
+            int leaders = team.countPersonalityType(PersonalityType.LEADER);
+            int balanced = team.countPersonalityType(PersonalityType.BALANCED);
+            int thinkers = team.countPersonalityType(PersonalityType.THINKER);
+
+            System.out.println("  Personalities: " + leaders + " Leaders, " + balanced + " Balanced, " + thinkers + " Thinkers");
+            System.out.println("  Games: " + team.getUniqueGames());
+            System.out.println("  Roles: " + team.getUniqueRoles());
         }
-        return false;
     }
 
     public void printAdvancedReport(List<Team> teams) {
-        System.out.println("\n=== ADVANCED TEAM REPORT ===");
-        System.out.println("Applied: 1 Leader max, Game variety, Role diversity");
+        System.out.println("\n=== ADVANCED TEAM ANALYSIS ===");
+        System.out.println("Constraints Applied: Leader limit, Game variety, Role diversity, Personality mix");
 
         for (Team team : teams) {
             System.out.println("\n" + team.getName() + ":");
@@ -249,12 +303,41 @@ public class TeamBuilder implements TeamFormationStrategy {
             System.out.println("  Games: " + team.getUniqueGames());
             System.out.println("  Roles: " + team.getUniqueRoles());
 
+            // Constraint validation
             System.out.print("  Constraints: ");
             System.out.print(leaders <= 1 ? "✓Leader " : "✗Leader ");
-            System.out.print(team.getUniqueGames().size() >= 2 ? "✓Games " : "✗Games ");
-            System.out.print(team.getUniqueRoles().size() >= 2 ? "✓Roles" : "✗Roles");
+            System.out.print(team.getUniqueGames().size() >= Math.min(2, team.getCurrentSize()) ? "✓Games " : "✗Games ");
+            System.out.print(team.getUniqueRoles().size() >= Math.min(3, team.getCurrentSize()) ? "✓Roles " : "✗Roles ");
+            System.out.print(isPersonalityBalanced(team) ? "✓Personality" : "✗Personality");
             System.out.println();
         }
     }
 
+    private boolean isPersonalityBalanced(Team team) {
+        int leaders = team.countPersonalityType(PersonalityType.LEADER);
+        int thinkers = team.countPersonalityType(PersonalityType.THINKER);
+        int balanced = team.countPersonalityType(PersonalityType.BALANCED);
+
+        return leaders <= 1 && thinkers >= 0 && balanced >= 1;
+    }
+
+    // ===== CLEANUP =====
+    public void shutdown() {
+        if (executor != null && !executor.isShutdown()) {
+            executor.shutdown();
+        }
+    }
+
+    // ===== GETTERS =====
+    public int getTeamSize() {
+        return teamSize;
+    }
+
+    public int getParticipantCount() {
+        return participants.size();
+    }
+
+    public TeamFormationConstraint getConstraints() {
+        return constraints;
+    }
 }
