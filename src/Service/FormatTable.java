@@ -1,8 +1,7 @@
 package Service;
 
 public interface Formattable {
-    String toDisplayString();
-    String toFormattedString();
-    String toCSVFormat();
-    String toDetailedString();
+    String toDisplayString();    // For console output
+    String toCSVString();        // For file output
+    String toDetailedString();   // For detailed reports
 }
