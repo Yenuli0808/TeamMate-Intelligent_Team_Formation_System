@@ -110,7 +110,7 @@ public class Main{
     }
 
     private static void displayFormattableObject(Formattable obj){
-        System.out.println(" - " + obj.toFormattedString());
+        System.out.println(" - " + obj.toDisplayString());
     }
 
     private static void demonstrateFileHandling(){
@@ -133,7 +133,7 @@ public class Main{
 
             System.out.println("\nSample of loaded data (first 3 participants):");
             for (int i = 0; i < Math.min(3, participants.size()); i++) {
-                System.out.println("  - " + participants.get(i).toFormattedString());
+                System.out.println("  - " + participants.get(i).toDisplayString());
             }
         }catch (Exception e){
             System.out.println("FILE HANDLING ERROR: " + e.getMessage());
