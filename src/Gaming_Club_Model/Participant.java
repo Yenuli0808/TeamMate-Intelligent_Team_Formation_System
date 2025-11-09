@@ -43,27 +43,24 @@ public class Participant extends BaseEntity implements Formattable {
 
 
     @Override
-    public String toFormattedString() {
+    public String toDisplayString() {
         return String.format("%s - %s (%s) | Skill: %d | Role: %s | Type: %s",
                 id, name, preferredGame, skillLevel, preferredRole, personalityType);
-
     }
 
     @Override
-    public String toCSVFormat() {
+    public String toCSVString() {
         return String.format("%s,%s,%s,%s,%d,%s,%d,%s",
                 id, name, email, preferredGame, skillLevel, preferredRole, personalityScore, personalityType);
     }
 
     @Override
     public String toDetailedString() {
-        return "";
+        return String.format("Participant Details:\n" +
+                        "ID: %s\nName: %s\nEmail: %s\nGame: %s\nSkill: %d\nRole: %s\nPersonality: %s (Score: %d)",
+                id, name, email, preferredGame, skillLevel, preferredRole, personalityType, personalityScore);
     }
 
-    @Override
-    public String toDisplayString() {
-        return "";
-    }
 
     public String getEmail() {
         return email;
@@ -91,7 +88,7 @@ public class Participant extends BaseEntity implements Formattable {
 
     @Override
     public String toString() {
-        return String.format("Participant{id='%s',game='%s',role='%s', skill=%d, type=%s} ",id,name,preferredGame,preferredRole,skillLevel,personalityType);
+        return toDisplayString();
     }
 
 
