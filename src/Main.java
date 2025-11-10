@@ -246,7 +246,7 @@ public class Main{
     }
 
     private static void demonstrateCompleteCSVWorkflow() {
-        System.out.println("\n📊 COMPLETE CSV WORKFLOW DEMONSTRATION");
+        System.out.println("\nCOMPLETE CSV WORKFLOW DEMONSTRATION");
         System.out.println("======================================");
 
         try {
@@ -274,7 +274,7 @@ public class Main{
                 System.out.println(teams.get(0).toDetailedString());
             }
 
-            System.out.println("\n🎉 CSV WORKFLOW COMPLETED SUCCESSFULLY!");
+            System.out.println("\nCSV WORKFLOW COMPLETED SUCCESSFULLY!");
             System.out.println("Input: participants_sample.csv → Processing → Output: formed_teams.csv");
 
         } catch (Exception e) {
