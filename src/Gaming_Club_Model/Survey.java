@@ -10,6 +10,10 @@ public class Survey {
     private int skillLevel;
 
     public  Survey(String participantId, int[] personalityResponses,String preferredGame, String preferredRole, int skillLevel) {
+        if (personalityResponses == null || personalityResponses.length != 5) {
+            throw new IllegalArgumentException("Need exactly 5 personality responses");
+        }
+        
         this.participantId = participantId;
         this.personalityResponses = personalityResponses;
         this.preferredGame = preferredGame;
