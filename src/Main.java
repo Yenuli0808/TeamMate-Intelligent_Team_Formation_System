@@ -1,3 +1,4 @@
+import Gaming_Club_Model.Organizer;
 import Gaming_Club_Model.Participant;
 import Gaming_Club_Model.Team;
 import Service.*;
@@ -17,6 +18,8 @@ public class Main{
         demonstrateFileHandling();
         demonstrateAdvancedAlgorithm();
         demonstrateConcurrency();
+
+        demonstrateOrganizerWorkflow();
 
     }
 
@@ -202,6 +205,42 @@ public class Main{
             System.out.println("✓ Concurrency demonstration completed!");
         } catch (InterruptedException e) {
             System.out.println("Thread was interrupted");
+        }
+    }
+
+    private static void demonstrateOrganizerWorkflow() {
+        System.out.println("\n8. ORGANIZER WORKFLOW DEMONSTRATION");
+        System.out.println("====================================");
+        System.out.println("Demonstrating all Organizer use cases from UML diagrams...");
+
+        try {
+            // Create organizer (actor from use cases)
+            Organizer organizer = new Organizer("ORG001", "Tournament Manager");
+
+            // USE CASE 1: Upload CSV File
+            organizer.uploadCSV("participants_sample.csv");
+
+            // USE CASE 2: Define Team Formation Parameters
+            organizer.setFormationParameters(4);
+
+            // USE CASE 3: Run Team Formation Algorithm
+            organizer.runTeamFormation();
+
+            // USE CASE 5: View Formation Results
+            organizer.viewFormationResults();
+
+            // USE CASE: Generate Advanced Report
+            organizer.generateAdvancedReport();
+
+            // USE CASE 4: Save Teams to CSV
+            organizer.saveTeams("organized_teams.csv");
+
+            System.out.println("\n🎉 ORGANIZER WORKFLOW COMPLETED!");
+            System.out.println("All use cases successfully executed by Organizer actor");
+
+        } catch (Exception e) {
+            System.out.println("❌ Organizer workflow failed: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
