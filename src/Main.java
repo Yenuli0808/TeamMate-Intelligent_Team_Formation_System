@@ -20,6 +20,7 @@ public class Main{
         demonstrateConcurrency();
 
         demonstrateOrganizerWorkflow();
+        demonstrateCompleteCSVWorkflow();
 
     }
 
@@ -241,6 +242,43 @@ public class Main{
         } catch (Exception e) {
             System.out.println("Organizer workflow failed: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    private static void demonstrateCompleteCSVWorkflow() {
+        System.out.println("\n📊 COMPLETE CSV WORKFLOW DEMONSTRATION");
+        System.out.println("======================================");
+
+        try {
+            CSVHandler csvHandler = new CSVHandler();
+
+            // 1. Load from input CSV
+            System.out.println("1. Loading participants from CSV...");
+            List<Participant> participants = csvHandler.loadParticipants("participants_sample.csv");
+            System.out.println(" Loaded: " + participants.size() + " participants");
+
+            // 2. Process teams
+            System.out.println("2.Forming balanced teams...");
+            TeamBuilder builder = new TeamBuilder(participants, 4);
+            List<Team> teams = builder.formAdvancedTeams();
+            System.out.println(" Formed: " + teams.size() + " teams");
+
+            // 3. Save to output CSV
+            System.out.println("3.Saving teams to output CSV...");
+            csvHandler.saveTeamsToCSV(teams, "formed_teams.csv");
+            System.out.println("Saved: formed_teams.csv");
+
+            // 4. Show sample output
+            System.out.println("\n4.Sample Team Output:");
+            if (!teams.isEmpty()) {
+                System.out.println(teams.get(0).toDetailedString());
+            }
+
+            System.out.println("\n🎉 CSV WORKFLOW COMPLETED SUCCESSFULLY!");
+            System.out.println("Input: participants_sample.csv → Processing → Output: formed_teams.csv");
+
+        } catch (Exception e) {
+            System.out.println("CSV workflow failed: " + e.getMessage());
         }
     }
 }
