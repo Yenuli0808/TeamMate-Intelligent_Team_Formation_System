@@ -10,6 +10,10 @@ import java.util.List;
 
 public class CSVHandler {
     public List<Participant> loadParticipants(String filename) throws IOException {
+        File file = new File(filename);
+        if (!file.exists()) {
+            throw new FileNotFoundException("CSV file not found: " + filename);
+        }
         List<Participant> participants = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new FileReader(filename));
         String line = reader.readLine(); // Skip header
