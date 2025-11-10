@@ -235,11 +235,11 @@ public class Main{
             // USE CASE 4: Save Teams to CSV
             organizer.saveTeams("organized_teams.csv");
 
-            System.out.println("\n🎉 ORGANIZER WORKFLOW COMPLETED!");
+            System.out.println("\nORGANIZER WORKFLOW COMPLETED!");
             System.out.println("All use cases successfully executed by Organizer actor");
 
         } catch (Exception e) {
-            System.out.println("❌ Organizer workflow failed: " + e.getMessage());
+            System.out.println("Organizer workflow failed: " + e.getMessage());
             e.printStackTrace();
         }
     }
