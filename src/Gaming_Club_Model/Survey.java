@@ -13,7 +13,7 @@ public class Survey {
         if (personalityResponses == null || personalityResponses.length != 5) {
             throw new IllegalArgumentException("Need exactly 5 personality responses");
         }
-        
+
         this.participantId = participantId;
         this.personalityResponses = personalityResponses;
         this.preferredGame = preferredGame;
