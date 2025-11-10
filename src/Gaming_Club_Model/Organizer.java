@@ -18,7 +18,7 @@ public class Organizer extends BaseEntity {
     public Organizer(String id, String name) {
         super(id, name);
         this.csvHandler = new CSVHandler();
-        System.out.println("🎯 Organizer created: " + name + " (ID: " + id + ")");
+        System.out.println("Organizer created: " + name + " (ID: " + id + ")");
     }
 
     // ===== USE CASE IMPLEMENTATIONS =====
@@ -29,12 +29,12 @@ public class Organizer extends BaseEntity {
      */
     public List<Participant> uploadCSV(String filename) {
         try {
-            System.out.println("\n📁 ORGANIZER ACTION: Uploading CSV file...");
+            System.out.println("\nORGANIZER ACTION: Uploading CSV file...");
             this.currentParticipants = csvHandler.loadParticipants(filename);
-            System.out.println("✅ SUCCESS: Uploaded " + currentParticipants.size() + " participants from " + filename);
+            System.out.println("SUCCESS: Uploaded " + currentParticipants.size() + " participants from " + filename);
             return currentParticipants;
         } catch (Exception e) {
-            System.out.println("❌ FAILED: CSV upload - " + e.getMessage());
+            System.out.println("FAILED: CSV upload - " + e.getMessage());
             throw new RuntimeException("CSV upload failed", e);
         }
     }
@@ -48,9 +48,9 @@ public class Organizer extends BaseEntity {
             throw new IllegalStateException("Please upload participant data first");
         }
 
-        System.out.println("\n⚙️ ORGANIZER ACTION: Setting formation parameters...");
+        System.out.println("\nORGANIZER ACTION: Setting formation parameters...");
         this.teamBuilder = new TeamBuilder(currentParticipants, teamSize);
-        System.out.println("✅ SUCCESS: Team size set to " + teamSize + " players per team");
+        System.out.println("SUCCESS: Team size set to " + teamSize + " players per team");
     }
 
     /**
@@ -62,9 +62,9 @@ public class Organizer extends BaseEntity {
             throw new IllegalStateException("Please set formation parameters first");
         }
 
-        System.out.println("\n🔄 ORGANIZER ACTION: Running team formation algorithm...");
+        System.out.println("\nORGANIZER ACTION: Running team formation algorithm...");
         this.currentTeams = teamBuilder.formAdvancedTeams();
-        System.out.println("✅ SUCCESS: Formed " + currentTeams.size() + " balanced teams");
+        System.out.println("SUCCESS: Formed " + currentTeams.size() + " balanced teams");
         return currentTeams;
     }
 
@@ -78,7 +78,7 @@ public class Organizer extends BaseEntity {
             return;
         }
 
-        System.out.println("\n📊 ORGANIZER ACTION: Viewing formation results...");
+        System.out.println("\nORGANIZER ACTION: Viewing formation results...");
         System.out.println("=== TEAM FORMATION RESULTS ===");
         for (int i = 0; i < currentTeams.size(); i++) {
             Team team = currentTeams.get(i);
@@ -102,11 +102,11 @@ public class Organizer extends BaseEntity {
         }
 
         try {
-            System.out.println("\n💾 ORGANIZER ACTION: Saving teams to CSV...");
+            System.out.println("\nORGANIZER ACTION: Saving teams to CSV...");
             csvHandler.saveTeamsToCSV(currentTeams, filename);
-            System.out.println("✅ SUCCESS: Saved " + currentTeams.size() + " teams to " + filename);
+            System.out.println("SUCCESS: Saved " + currentTeams.size() + " teams to " + filename);
         } catch (Exception e) {
-            System.out.println("❌ FAILED: Save teams - " + e.getMessage());
+            System.out.println("FAILED: Save teams - " + e.getMessage());
             throw new RuntimeException("Team save failed", e);
         }
     }
@@ -120,7 +120,7 @@ public class Organizer extends BaseEntity {
             throw new IllegalStateException("No teams available for analysis");
         }
 
-        System.out.println("\n📈 ORGANIZER ACTION: Generating advanced team report...");
+        System.out.println("\nORGANIZER ACTION: Generating advanced team report...");
         teamBuilder.printAdvancedReport(currentTeams);
     }
 
