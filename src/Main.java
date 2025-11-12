@@ -126,7 +126,7 @@ public class Main{
 
             System.out.println("Loading Participant from CSV file...");
             List<Participant> participants = csvHandler.loadParticipants("participants_sample.csv");
-            System.out.printf("Successfully loaded %d participants%n", participants.size()+"from CSV file");
+            System.out.printf("Successfully loaded %d participants from CSV file%n", participants.size());
 
             TeamBuilder builder = new TeamBuilder(participants, 4);
             List<Team> teams = builder.formBalancedTeams();  // Declare teams here
