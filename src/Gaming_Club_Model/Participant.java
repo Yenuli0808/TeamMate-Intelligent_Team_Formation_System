@@ -11,13 +11,14 @@ import Service.PersonalityClassifier;
 
 public class Participant extends BaseEntity implements Formattable {
     private String email;
+    private String phoneNumber;
     private String preferredGame;
     private int skillLevel;
     private String preferredRole;
     private int personalityScore;
     private PersonalityType personalityType;
 
-    public Participant(String id,String name,String email,String preferredGame,int skillLevel,String preferredRole,int personalityScore) {
+    public Participant(String id,String name,String email,String phoneNumber,String preferredGame,int skillLevel,String preferredRole,int personalityScore) {
 
         super(id,name);
 
@@ -27,8 +28,12 @@ public class Participant extends BaseEntity implements Formattable {
         if(personalityScore <0 ||personalityScore>100){
             throw new IllegalArgumentException("Personal Score must be between 0 and 100");
         }
+        if (email == null || !email.contains("@")) {
+            throw new IllegalArgumentException("Valid email required");
+        }
 
         this.email = email;
+        this.phoneNumber = phoneNumber;
         this.preferredGame = preferredGame;
         this.skillLevel = skillLevel;
         this.preferredRole = preferredRole;
