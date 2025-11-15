@@ -1,5 +1,6 @@
 import Gaming_Club_Model.Organizer;
 import Gaming_Club_Model.Participant;
+import Gaming_Club_Model.Survey;
 import Gaming_Club_Model.Team;
 import Service.*;
 
@@ -46,11 +47,11 @@ public class Main{
         System.out.println("------------------------------------------");
 
         try{
-            Participant participant1 = new Participant("P001","John Doe","john@university.edu","Valorant",8,"Strategist",85);
+            Participant participant1 = new Participant("P001","John Doe","john@university.edu","0701053109","Valorant",8,"Strategist",85);
             System.out.println("Participant 1 created: " + participant1);
 
             try{
-                Participant invalid= new Participant("P002","Jane Smith","jane@university.edu","CS:G0",15,"Attacker",85);
+                Participant invalid= new Participant("P002","Jane Smith","jane@university.edu","0701053109","CS:G0",15,"Attacker",85);
             }catch (IllegalArgumentException e){
                 System.out.println("Rejected Invalid Participant: " + e.getMessage());
             }
@@ -66,12 +67,12 @@ public class Main{
 
         try{
             List<Participant> participants = Arrays.asList(
-                    new Participant("P001", "Alice", "alice@edu.com", "Valorant", 8, "Strategist", 95),
-                    new Participant("P002", "Bob", "bob@edu.com", "CS:GO", 6, "Attacker", 75),
-                    new Participant("P003", "Charlie", "charlie@edu.com", "DOTA 2", 7, "Defender", 65),
-                    new Participant("P004", "Diana", "diana@edu.com", "Valorant", 9, "Supporter", 85),
-                    new Participant("P005", "Eve", "eve@edu.com", "CS:GO", 5, "Coordinator", 70),
-                    new Participant("P006", "Frank", "frank@edu.com", "DOTA 2", 8, "Strategist", 90)
+                    new Participant("P001", "Alice", "alice@edu.com","0701053109", "Valorant", 8, "Strategist", 95),
+                    new Participant("P002", "Bob", "bob@edu.com","0701053109", "CS:GO", 6, "Attacker", 75),
+                    new Participant("P003", "Charlie", "charlie@edu.com","0701053109", "DOTA 2", 7, "Defender", 65),
+                    new Participant("P004", "Diana", "diana@edu.com","0701053109", "Valorant", 9, "Supporter", 85),
+                    new Participant("P005", "Eve", "eve@edu.com","0701053109", "CS:GO", 5, "Coordinator", 70),
+                    new Participant("P006", "Frank", "frank@edu.com","0701053109", "DOTA 2", 8, "Strategist", 90)
             );
             System.out.printf("Forming teams from %d participants...%n", participants.size());
 
@@ -95,8 +96,8 @@ public class Main{
         System.out.println("--------------------------------------");
 
         List<Participant> participants = Arrays.asList(
-                new Participant("P001", "Alice", "alice@edu.com", "Valorant", 8, "Strategist", 95),
-                new Participant("P002", "Bob", "bob@edu.com", "CS:GO", 6, "Attacker", 75)
+                new Participant("P001", "Alice", "alice@edu.com","0701053109", "Valorant", 8, "Strategist", 95),
+                new Participant("P002", "Bob", "bob@edu.com","0701053109", "CS:GO", 6, "Attacker", 75)
         );
 
         System.out.println("Formattable Interface Examples:");
@@ -150,12 +151,12 @@ public class Main{
         System.out.println("-------------------------------------");
 
         List<Participant> participants = Arrays.asList(
-                new Participant("P001", "Alice", "alice@edu.com", "Valorant", 8, "Strategist", 95),
-                new Participant("P002", "Bob", "bob@edu.com", "Valorant", 6, "Attacker", 75),
-                new Participant("P003", "Charlie", "charlie@edu.com", "Valorant", 7, "Defender", 65),
-                new Participant("P004", "Diana", "diana@edu.com", "CS:GO", 9, "Supporter", 85),
-                new Participant("P005", "Eve", "eve@edu.com", "CS:GO", 5, "Coordinator", 92),
-                new Participant("P006", "Frank", "frank@edu.com", "DOTA 2", 8, "Strategist", 88)
+                new Participant("P001", "Alice", "alice@edu.com","0701053109", "Valorant", 8, "Strategist", 95),
+                new Participant("P002", "Bob", "bob@edu.com","0701053109", "Valorant", 6, "Attacker", 75),
+                new Participant("P003", "Charlie", "charlie@edu.com","0701053109", "Valorant", 7, "Defender", 65),
+                new Participant("P004", "Diana", "diana@edu.com", "0701053109","CS:GO", 9, "Supporter", 85),
+                new Participant("P005", "Eve", "eve@edu.com","0701053109", "CS:GO", 5, "Coordinator", 92),
+                new Participant("P006", "Frank", "frank@edu.com","0701053109", "DOTA 2", 8, "Strategist", 88)
         );
 
         System.out.println("Using Advanced Algorithm with 3 Simple Rules:");
@@ -180,9 +181,9 @@ public class Main{
         System.out.println("-----------------------------------");
 
         List<Participant> participants = Arrays.asList(
-                new Participant("P001", "Alice", "alice@edu.com", "Valorant", 8, "Strategist", 95),
-                new Participant("P002", "Bob", "bob@edu.com", "CS:GO", 6, "Attacker", 75),
-                new Participant("P003", "Charlie", "charlie@edu.com", "DOTA 2", 7, "Defender", 65)
+                new Participant("P001", "Alice", "alice@edu.com","0701053109", "Valorant", 8, "Strategist", 95),
+                new Participant("P002", "Bob", "bob@edu.com","0701053109", "CS:GO", 6, "Attacker", 75),
+                new Participant("P003", "Charlie", "charlie@edu.com","0701053109", "DOTA 2", 7, "Defender", 65)
         );
         System.out.println("Starting team formation in background thread...");
 
@@ -280,6 +281,31 @@ public class Main{
         } catch (Exception e) {
             System.out.println("CSV workflow failed: " + e.getMessage());
         }
-        //gfht
+
+    }
+
+    private static void demonstrateSurveyWorkflow() {
+        System.out.println("SURVEY WORKFLOW DEMONSTRATION");
+        System.out.println("-----------------------------");
+
+        // Create survey with personal information
+        Survey survey = new Survey("P201",new int[]{5, 4, 3, 5, 4},"Valorant","Strategist",8);
+
+        // Process survey to create participant
+        Participant participant = survey.processSurvey();
+        System.out.println("Survey processed: " + participant.toDisplayString());
+    }
+
+    private static void demonstrateParticipantPortal() {
+        System.out.println("PARTICIPANT PORTAL DEMONSTRATION");
+        System.out.println("--------------------------------");
+
+        ParticipantPortal portal = new ParticipantPortal();
+        try {
+            String teamInfo = portal.getTeamAssignmentDetails("P001");
+            System.out.println("Team Assignment: " + teamInfo);
+        } catch (Exception e) {
+            System.out.println("No team assignment: " + e.getMessage());
+        }
     }
 }
