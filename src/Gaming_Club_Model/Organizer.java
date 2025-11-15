@@ -63,6 +63,7 @@ public class Organizer extends BaseEntity {
         }
 
         System.out.println("\nORGANIZER ACTION: Running team formation algorithm...");
+        List<Participant> participants = null;
         this.currentTeams = teamBuilder.formAdvancedTeams(participants);
         System.out.println("SUCCESS: Formed " + currentTeams.size() + " balanced teams");
         return currentTeams;
@@ -122,6 +123,18 @@ public class Organizer extends BaseEntity {
 
         System.out.println("\nORGANIZER ACTION: Generating advanced team report...");
         teamBuilder.printAdvancedReport(currentTeams);
+    }
+
+    public List<Participant> uploadCSV(CSVHandler.FileSource source, String filename) {
+        try {
+            System.out.println("\nORGANIZER ACTION: Uploading from " + source + " - " + filename);
+            this.currentParticipants = csvHandler.loadParticipants(source, filename);
+            System.out.println("SUCCESS: Uploaded " + currentParticipants.size() + " participants");
+            return currentParticipants;
+        } catch (Exception e) {
+            System.out.println("FAILED: CSV upload - " + e.getMessage());
+            throw new RuntimeException("CSV upload failed", e);
+        }
     }
 
     @Override
