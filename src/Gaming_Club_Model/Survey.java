@@ -4,6 +4,9 @@ import Service.PersonalityClassifier;
 
 public class Survey {
     private String participantId;
+    private String name;
+    private String email;
+    private String phoneNumber;
     private int[] personalityResponses;
     private String preferredGame;
     private String preferredRole;
@@ -25,8 +28,15 @@ public class Survey {
         return personalityResponses.length == 5 && skillLevel >=1 && skillLevel <=10;
     }
 
-    public int calculatePersonalityScore(){
-        return PersonalityClassifier.calculateFromSurvey(personalityResponses);
+    public Participant processSurvey() {
+        // Calculate personality score from responses
+        int personalityScore = PersonalityClassifier.calculateFromSurvey(personalityResponses);
+
+        // Create and return participant
+        return new Participant(
+                participantId, name, email, phoneNumber,
+                preferredGame, skillLevel, preferredRole, personalityScore
+        );
     }
 
 }
