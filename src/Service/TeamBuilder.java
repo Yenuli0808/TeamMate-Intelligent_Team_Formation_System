@@ -2,12 +2,14 @@ package Service;
 
 import Gaming_Club_Model.Participant;
 import Gaming_Club_Model.PersonalityType;
+import Gaming_Club_Model.Survey;
 import Gaming_Club_Model.Team;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class TeamBuilder implements TeamFormationStrategy {
     private int teamSize;
@@ -49,8 +51,8 @@ public class TeamBuilder implements TeamFormationStrategy {
         return teams;
     }
 
-    public List<Team> formAdvancedTeams() {
-        int teamCount = (int) Math.ceil((double) participants.size() / teamSize);
+    public List<Team> formAdvancedTeams(List<Participant> participants) {
+        int teamCount = (int) Math.ceil((double) this.participants.size() / teamSize);
         List<Team> teams = createEmptyTeams(teamCount);
 
         System.out.println("Applying Advanced Constraints:");
@@ -86,7 +88,7 @@ public class TeamBuilder implements TeamFormationStrategy {
                 // Simulate processing time for large datasets
                 Thread.sleep(500);
                 System.out.println("✓ Background processing completed");
-                return formAdvancedTeams();
+                return formAdvancedTeams(participants);
             } catch (InterruptedException e) {
                 throw new RuntimeException("Team formation interrupted", e);
             }
@@ -104,6 +106,17 @@ public class TeamBuilder implements TeamFormationStrategy {
             } catch (InterruptedException e) {
                 throw new RuntimeException("Survey processing interrupted", e);
             }
+        }, executor);
+    }
+    public CompletableFuture<List<Team>> processSurveysAndFormTeams(List<Survey> surveys) {
+        return CompletableFuture.supplyAsync(() -> {
+            // Process surveys concurrently
+            List<Participant> participants = surveys.parallelStream()
+                    .map(Survey::processSurvey)
+                    .collect(Collectors.toList());
+
+            System.out.println("Processed " + participants.size() + " surveys");
+            return formAdvancedTeams(participants);
         }, executor);
     }
 

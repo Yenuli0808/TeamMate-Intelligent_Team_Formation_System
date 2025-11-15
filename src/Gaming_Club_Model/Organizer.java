@@ -63,7 +63,7 @@ public class Organizer extends BaseEntity {
         }
 
         System.out.println("\nORGANIZER ACTION: Running team formation algorithm...");
-        this.currentTeams = teamBuilder.formAdvancedTeams();
+        this.currentTeams = teamBuilder.formAdvancedTeams(participants);
         System.out.println("SUCCESS: Formed " + currentTeams.size() + " balanced teams");
         return currentTeams;
     }
