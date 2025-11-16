@@ -26,6 +26,7 @@ public class Main {
             System.out.println("2.Participant Portal");
             System.out.println("3. Run System Demonstration");
             System.out.println("4. Exist");
+            System.out.print("Select option (1-4): ");
 
             String choice = scanner.nextLine().trim();
 
@@ -62,6 +63,7 @@ public class Main {
             System.out.println("5. Save Teams to CSV");
             System.out.println("6. Generate Advanced Report");
             System.out.println("7. Return to Main Menu");
+            System.out.print("Select option (1-7): ");
 
             String choice = scanner.nextLine().trim();
 
@@ -107,6 +109,7 @@ public class Main {
         System.out.println("===== PARTICIPANT PORTAL =====");
         System.out.println("1. Complete Survey");
         System.out.println("2. View Team Assignment");
+        System.out.print("Select option (1-2): ");
 
         String choice = scanner.nextLine().trim();
 
