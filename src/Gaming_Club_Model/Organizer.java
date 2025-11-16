@@ -38,6 +38,19 @@ public class Organizer extends BaseEntity {
             throw new RuntimeException("CSV upload failed", e);
         }
     }
+    public List<Participant> uploadCSV(CSVHandler.FileSource source, String filename) {
+        try {
+            System.out.println("\nORGANIZER ACTION: Uploading CSV file...");
+            System.out.println("File Source: " + source + ", Path: " + filename);
+
+            this.currentParticipants = csvHandler.loadParticipants(source, filename);
+            System.out.println("SUCCESS: Uploaded " + currentParticipants.size() + " participants");
+            return currentParticipants;
+        } catch (Exception e) {
+            System.out.println("FAILED: CSV upload - " + e.getMessage());
+            throw new RuntimeException("CSV upload failed", e);
+        }
+    }
 
     /**
      * USE CASE: Define Team Formation Parameters
@@ -125,17 +138,6 @@ public class Organizer extends BaseEntity {
         teamBuilder.printAdvancedReport(currentTeams);
     }
 
-    public List<Participant> uploadCSV(CSVHandler.FileSource source, String filename) {
-        try {
-            System.out.println("\nORGANIZER ACTION: Uploading from " + source + " - " + filename);
-            this.currentParticipants = csvHandler.loadParticipants(source, filename);
-            System.out.println("SUCCESS: Uploaded " + currentParticipants.size() + " participants");
-            return currentParticipants;
-        } catch (Exception e) {
-            System.out.println("FAILED: CSV upload - " + e.getMessage());
-            throw new RuntimeException("CSV upload failed", e);
-        }
-    }
 
     @Override
     public boolean validate() {
