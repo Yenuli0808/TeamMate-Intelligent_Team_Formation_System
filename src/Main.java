@@ -74,7 +74,7 @@ public class Main {
                     case "1":
                         System.out.println("Enter CSV file path (e.g., participants_sample.csv): ");
                         String csvFile = scanner.nextLine().trim();
-                        organizer.uploadCSV(csvFile);
+                        currentParticipants = organizer.uploadCSV(csvFile);
                         break;
                     case "2":
                         System.out.print("Enter Team Size: ");
@@ -82,7 +82,7 @@ public class Main {
                         organizer.setFormationParameters(teamSize);
                         break;
                     case "3":
-                        organizer.runTeamFormation();
+                        currentTeams = organizer.runTeamFormation();
                         break;
                     case "4":
                         organizer.viewFormationResults();
