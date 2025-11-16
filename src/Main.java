@@ -348,7 +348,7 @@ public class Main {
         System.out.println("3. Prefer different roles for diversity");
 
         TeamBuilder advancedBuilder = new TeamBuilder(participants, 3);
-        List<Team> advancedTeams = advancedBuilder.formAdvancedTeams(participants);
+        List<Team> advancedTeams = advancedBuilder.formAdvancedTeams();
 
         System.out.println("\nADVANCED ALGORITHM: Formed " + advancedTeams.size() + " optimally balanced teams");
         advancedBuilder.printAdvancedReport(advancedTeams);
@@ -427,7 +427,7 @@ public class Main {
 
             System.out.println("2. Forming balanced teams...");
             TeamBuilder builder = new TeamBuilder(participants, 4);
-            List<Team> teams = builder.formAdvancedTeams(participants);
+            List<Team> teams = builder.formAdvancedTeams();
             System.out.println(" Formed: " + teams.size() + " teams");
 
             System.out.println("3. Saving teams to output CSV...");

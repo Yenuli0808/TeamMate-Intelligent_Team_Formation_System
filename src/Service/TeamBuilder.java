@@ -51,7 +51,7 @@ public class TeamBuilder implements TeamFormationStrategy {
         return teams;
     }
 
-    public List<Team> formAdvancedTeams(List<Participant> participants) {
+    public List<Team> formAdvancedTeams() {
         int teamCount = (int) Math.ceil((double) this.participants.size() / teamSize);
         List<Team> teams = createEmptyTeams(teamCount);
 
@@ -88,7 +88,7 @@ public class TeamBuilder implements TeamFormationStrategy {
                 // Simulate processing time for large datasets
                 Thread.sleep(500);
                 System.out.println("✓ Background processing completed");
-                return formAdvancedTeams(participants);
+                return formAdvancedTeams();
             } catch (InterruptedException e) {
                 throw new RuntimeException("Team formation interrupted", e);
             }
@@ -116,7 +116,7 @@ public class TeamBuilder implements TeamFormationStrategy {
                     .collect(Collectors.toList());
 
             System.out.println("Processed " + participants.size() + " surveys");
-            return formAdvancedTeams(participants);
+            return formAdvancedTeams();
         }, executor);
     }
 
