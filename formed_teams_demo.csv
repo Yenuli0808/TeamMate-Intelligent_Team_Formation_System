@@ -1,0 +1,26 @@
+TeamID,TeamName,Members,AverageSkill,PersonalityDistribution,Games,Roles
+T1,Team 1,P038;P090;P098;P091,5.25,Leaders:1-Balanced:2-Thinkers:1,Valorant;Chess;CS:GO;FIFA,Defender;Coordinator;Strategist
+T2,Team 2,P066;P084;P009;P085,5.50,Leaders:1-Balanced:0-Thinkers:3,Chess;FIFA;CS:GO;Basketball,Strategist;Supporter;Coordinator
+T3,Team 3,P067;P079;P016;P083,5.50,Leaders:3-Balanced:1-Thinkers:0,Basketball;Chess;CS:GO;DOTA 2,Attacker;Supporter;Strategist;Defender
+T4,Team 4,P068;P072;P027;P082,5.50,Leaders:1-Balanced:1-Thinkers:2,Chess;DOTA 2;Valorant,Defender;Attacker
+T5,Team 5,P070;P069;P044;P081,5.50,Leaders:1-Balanced:1-Thinkers:2,Basketball;CS:GO;FIFA,Coordinator;Supporter;Strategist
+T6,Team 6,P080;P050;P048;P047,5.50,Leaders:0-Balanced:3-Thinkers:1,Basketball;Valorant;DOTA 2,Coordinator;Defender;Attacker
+T7,Team 7,P001;P046;P062;P017,5.75,Leaders:2-Balanced:2-Thinkers:0,Chess;CS:GO;Basketball,Strategist;Attacker
+T8,Team 8,P006;P041;P064;P008,5.75,Leaders:1-Balanced:2-Thinkers:1,CS:GO;Basketball;Valorant,Strategist;Supporter;Defender
+T9,Team 9,P032;P039;P078;P086,5.50,Leaders:0-Balanced:2-Thinkers:2,DOTA 2;FIFA,Attacker;Supporter;Defender;Strategist
+T10,Team 10,P043;P029;P089;P040,5.50,Leaders:2-Balanced:2-Thinkers:0,DOTA 2;Basketball;Chess,Defender;Supporter;Coordinator
+T11,Team 11,P045;P010;P024;P036,5.75,Leaders:1-Balanced:0-Thinkers:3,Chess;Valorant;DOTA 2,Coordinator;Supporter;Strategist
+T12,Team 12,P051;P007;P033;P025,5.75,Leaders:2-Balanced:0-Thinkers:2,FIFA;DOTA 2,Strategist;Attacker;Defender;Coordinator
+T13,Team 13,P052;P002;P034;P022,5.75,Leaders:3-Balanced:1-Thinkers:0,FIFA;Chess,Attacker;Supporter
+T14,Team 14,P077;P093;P042;P019,5.50,Leaders:1-Balanced:1-Thinkers:2,FIFA;CS:GO;DOTA 2,Attacker;Defender;Supporter
+T15,Team 15,P094;P088;P053;P005,5.50,Leaders:2-Balanced:2-Thinkers:0,CS:GO;FIFA;DOTA 2,Supporter;Defender;Coordinator
+T16,Team 16,P095;P087;P057;P096,5.25,Leaders:0-Balanced:1-Thinkers:3,CS:GO;Basketball;DOTA 2,Coordinator;Attacker;Strategist
+T17,Team 17,P012;P060;P061;P075,5.50,Leaders:1-Balanced:0-Thinkers:3,DOTA 2;CS:GO;Valorant,Attacker;Coordinator;Strategist
+T18,Team 18,P014;P059;P065;P073,5.50,Leaders:1-Balanced:3-Thinkers:0,FIFA;DOTA 2,Supporter;Coordinator;Defender
+T19,Team 19,P018;P056;P076;P071,5.50,Leaders:1-Balanced:2-Thinkers:1,FIFA;Basketball;Chess,Defender;Strategist
+T20,Team 20,P020;P030;P092;P063,5.50,Leaders:0-Balanced:2-Thinkers:2,Valorant;CS:GO;Basketball;Chess,Coordinator;Attacker;Defender
+T21,Team 21,P023;P021;P100;P055,5.50,Leaders:2-Balanced:1-Thinkers:1,CS:GO;FIFA;Chess,Defender;Strategist;Coordinator
+T22,Team 22,P049;P013;P011;P054,5.75,Leaders:2-Balanced:1-Thinkers:1,Basketball;DOTA 2;Valorant,Supporter;Defender;Strategist
+T23,Team 23,P058;P004;P015;P037,5.75,Leaders:3-Balanced:0-Thinkers:1,Valorant;Basketball;DOTA 2,Defender;Supporter;Coordinator;Attacker
+T24,Team 24,P074;P003;P026;P035,5.75,Leaders:0-Balanced:3-Thinkers:1,FIFA;Chess;Basketball,Supporter;Defender;Strategist;Coordinator
+T25,Team 25,P097;P099;P028;P031,5.50,Leaders:3-Balanced:0-Thinkers:1,FIFA;Valorant;CS:GO;Basketball,Attacker;Supporter;Defender;Strategist
