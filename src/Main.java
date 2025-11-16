@@ -11,6 +11,8 @@ import java.util.Scanner;
 public class Main {
     private static Scanner scanner = new Scanner(System.in);
     private static CSVHandler csvHandler = new CSVHandler();
+    private static List<Team> currentTeams = null;
+    private static List<Participant> currentParticipants = null;
 
     public static void main(String[] args) {
         System.out.println("=====TeamMate: Intelligent Team Formation System=====");
@@ -187,11 +189,39 @@ public class Main {
 
     private static void viewTeamAssignment() {
         System.out.println("===== VIEW TEAM ASSIGNMENT =====");
+
+        // Check if teams are available
+        if (currentTeams == null || currentTeams.isEmpty()) {
+            System.out.println("No teams have been formed yet.");
+            System.out.println("Please ask the organizer to run team formation first.");
+            return;
+        }
+
         System.out.print("Enter Participant ID: ");
         String participantId = scanner.nextLine().trim();
 
-        System.out.println("Team assignment feature would lookup from formed teams database");
-        System.out.println("For demonstration, check the generated CSV files for team assignments");
+        try {
+            // Initialize participant portal with current data
+            ParticipantPortal portal = new ParticipantPortal();
+            portal.initializeData(currentTeams, currentParticipants);
+
+            // Get and display team assignment
+            String teamDetails = portal.getTeamAssignmentDetails(participantId);
+            System.out.println("\n" + teamDetails);
+
+            // Show additional statistics
+            System.out.println("\n" + portal.getTeamStatistics(participantId));
+
+        } catch (IllegalArgumentException e) {
+            System.out.println( e.getMessage());
+            System.out.println("Available Participant IDs:");
+            // Show first 10 participant IDs as suggestions
+            currentParticipants.stream()
+                    .limit(10)
+                    .forEach(p -> System.out.println("  - " + p.getId() + ": " + p.getName()));
+        } catch (Exception e) {
+            System.out.println("Error retrieving team assignment: " + e.getMessage());
+        }
     }
 
     private static void runAllDemonstration() {
