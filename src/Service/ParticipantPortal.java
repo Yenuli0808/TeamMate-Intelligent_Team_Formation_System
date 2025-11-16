@@ -19,18 +19,38 @@ public class ParticipantPortal {
     //Initialize with teams and participants data
     public void initializeData(List<Team> teams, List<Participant> participants){
         if (teams == null || participants == null){
-            throw new IllegalArgumentException("Teams and Participants are null");
+            throw new IllegalArgumentException("Teams and Participants can not be null");
         }
+
+        System.out.println("Initializing with " + teams.size() + " teams and " + participants.size() + " participants");
+
+        // Clear previous data
+        participantTeams.clear();
+        allParticipants.clear();
 
         for(Participant participant : participants){
             allParticipants.put(participant.getId(), participant);    // In here we will store all participant for look up
         }
+
+        int totalMappings = 0;
         for(Team team : teams){
-            for(Participant participant : participants){
-                allParticipants.put(participant.getId(), participant);  // build participant to team mapping
+            for (Participant member : team.getMembers()) {
+                participantTeams.put(member.getId(), team);
+                totalMappings++;
             }
         }
-        System.out.println("Participant portal initialized with " + teams.size() + " teams and " + participants.size() + " participants");
+        System.out.println("Created " + totalMappings + " participant-team mappings");
+    }
+
+    public void debugTeamAssignments() {
+        System.out.println("\n=== DEBUG: ALL TEAM ASSIGNMENTS ===");
+        for (Map.Entry<String, Team> entry : participantTeams.entrySet()) {
+            Participant p = allParticipants.get(entry.getKey());
+            String participantName = (p != null) ? p.getName() : "Unknown";
+            System.out.printf("  %s (%s) -> %s%n",
+                    entry.getKey(), participantName, entry.getValue().getName());
+        }
+        System.out.println("Total assignments: " + participantTeams.size());
     }
 
     public Team viewTeamAssignment(String participantId) {
@@ -38,8 +58,27 @@ public class ParticipantPortal {
             throw new IllegalArgumentException("Participant ID cannot be empty");
         }
 
-        Team team = participantTeams.get(participantId.trim());
+        String searchId = participantId.trim().toUpperCase();
+
+        Team team = participantTeams.get(searchId);
         if (team == null) {
+            team = participantTeams.entrySet().stream()
+                    .filter(entry -> entry.getKey().equalsIgnoreCase(searchId))
+                    .map(Map.Entry::getValue)
+                    .findFirst()
+                    .orElse(null);
+        }
+        if (team == null) {
+            // Show available IDs for debugging
+            System.out.println("Available participant IDs in teams:");
+            participantTeams.keySet().stream()
+                    .sorted()
+                    .limit(10)
+                    .forEach(id -> {
+                        Participant p = allParticipants.get(id);
+                        String name = (p != null) ? p.getName() : "Unknown";
+                        System.out.println("  - " + id + " (" + name + ")");
+                    });
             throw new IllegalArgumentException("No team assignment found for participant ID: " + participantId);
         }
         return team;
@@ -48,10 +87,19 @@ public class ParticipantPortal {
     public String getTeamAssignmentDetails(String participantId) {
         try{
             Team team = viewTeamAssignment(participantId);
-            Participant participant = allParticipants.get(participantId);
+            Participant participant = allParticipants.get(participantId.toUpperCase());
 
-            if(participant == null){
-                throw new IllegalArgumentException("No participant found for participant ID: " + participantId);
+            if (participant == null) {
+                // Try to find participant with different case
+                participant = allParticipants.entrySet().stream()
+                        .filter(entry -> entry.getKey().equalsIgnoreCase(participantId))
+                        .map(Map.Entry::getValue)
+                        .findFirst()
+                        .orElse(null);
+
+                if (participant == null) {
+                    throw new IllegalArgumentException("Participant not found: " + participantId);
+                }
             }
             return formatTeamDetailsForParticipant(team,participant);
         }
@@ -74,7 +122,9 @@ public class ParticipantPortal {
 
         //Team members details
         details.append("YOUR TEAMMATES:\n");
-        List<Participant> teammates = team.getMembers().stream().filter(member -> !member.getId().equals(participant.getId())).collect(Collectors.toList());
+        List<Participant> teammates = team.getMembers().stream()
+                .filter(member -> !member.getId().equalsIgnoreCase(participant.getId()))
+                .collect(Collectors.toList());
 
         if (teammates.isEmpty()) {
             details.append("  No other team members assigned yet.\n");
@@ -103,6 +153,20 @@ public class ParticipantPortal {
             }
         }
         return details.toString();
+    }
+
+    //Search for participant by name or partial ID
+    public List<Participant> findParticipant(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        String term = searchTerm.toLowerCase().trim();
+        return allParticipants.values().stream()
+                .filter(p -> p.getId().toLowerCase().contains(term) ||
+                        p.getName().toLowerCase().contains(term) ||
+                        p.getEmail().toLowerCase().contains(term))
+                .collect(Collectors.toList());
     }
 
     //checking weather participant has team assignments
@@ -144,11 +208,11 @@ public class ParticipantPortal {
         return Collections.unmodifiableMap(participantTeams);
     }
 
+    public Map<String, Participant> getAllParticipants() {
+        return Collections.unmodifiableMap(allParticipants);
+    }
+
     public int getTotalAssignments() {
         return participantTeams.size();
     }
-
-
-
-
 }
