@@ -390,4 +390,86 @@ public class CSVHandler {
         }
     }
 
+    public void appendParticipantToCSV(Participant participant, String filename) throws IOException {
+        appendParticipantToCSV(FileSource.LOCAL_FILE,participant,filename);
+    }
+
+    public void appendParticipantToCSV(FileSource source, Participant participant, String filePath) throws IOException {
+        String actualPath = resolveFilePath(source,filePath);
+
+        File file = new File(actualPath);
+
+        if (!file.exists()) {
+            createNewCSVWithHeader(actualPath);   //this will create file if it doesn't exist
+        }
+        if(!participant.validate()){
+            throw new IllegalArgumentException("Participant data is invalid");
+        }
+
+        try(FileWriter fw = new FileWriter(actualPath,true);
+        PrintWriter writer = new PrintWriter(fw)) {
+            writer.println(participant.toCSVString());
+
+            System.out.println("✓ Successfully added participant to CSV: " + participant.getId());
+            logger.info("Appended participant " + participant.getId() + " to " + actualPath);
+        }catch (IOException e) {
+            logger.severe("Failed to append participant to CSV: " + e.getMessage());
+            throw new IOException("Failed to save participant data: " + e.getMessage(), e);
+        }
+    }
+
+    private void createNewCSVWithHeader(String filename) throws IOException {
+        try(PrintWriter writer = new PrintWriter(new FileWriter(filename))){
+            writer.println("ID,Name,Email,PreferredGame,SkillLevel,PreferredRole,PersonalityScore,PersonalityType");
+            System.out.println("Created new CSV file with headers: " + filename);
+        }
+    }
+
+    public boolean isParticipantIdExists(String participantId, String filename) throws IOException {
+        String actualPath = resolveFilePath(FileSource.LOCAL_FILE,filename);
+        File file = new File(actualPath);
+
+        if (!file.exists()) {
+            return false;
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(actualPath))) {
+            String line;
+            reader.readLine();
+
+            while ((line = reader.readLine()) != null) {
+                if(line.trim().isEmpty()) continue;
+
+                String[] parts = line.split(",");
+                if(parts.length > 0 && parts[0].trim().equalsIgnoreCase(participantId)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public List<String> getAllParticipantIds(String filename) throws IOException {
+        List<String> ids = new ArrayList<>();
+        String actualPath = resolveFilePath(FileSource.LOCAL_FILE,filename);
+        File file = new File(actualPath);
+
+        if (!file.exists()) {
+            return ids;
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(actualPath))) {
+            String line;
+            reader.readLine();
+
+            while ((line = reader.readLine()) != null) {
+                if(line.trim().isEmpty()) continue;
+
+                String[] parts = line.split(",");
+                if(parts.length >0){
+                    ids.add(parts[0].trim());
+                }
+            }
+        }
+        return ids;
+    }
+
 }

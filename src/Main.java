@@ -5,6 +5,8 @@ import Gaming_Club_Model.Team;
 import Service.*;
 import Service.Formattable;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class Main {
@@ -12,6 +14,7 @@ public class Main {
     private static CSVHandler csvHandler = new CSVHandler();
     private static List<Team> currentTeams = null;
     private static List<Participant> currentParticipants = null;
+    private static final String PARTICIPANTS_CSV = "participants_sample.csv";
 
     public static void main(String[] args) {
         System.out.println("=====TeamMate: Intelligent Team Formation System=====");
@@ -63,8 +66,10 @@ public class Main {
             System.out.println("4. View Formation Results");
             System.out.println("5. Save Teams to CSV");
             System.out.println("6. Generate Advanced Report");
-            System.out.println("7. Return to Main Menu");
-            System.out.print("Select option (1-7): ");
+            System.out.println("7. Refresh Participant Data");
+            System.out.println("8. Show Participant Statistics");
+            System.out.println("9. Return to Main Menu");
+            System.out.print("Select option (1-9): ");
 
             String choice = scanner.nextLine().trim();
 
@@ -95,6 +100,12 @@ public class Main {
                         organizer.generateAdvancedReport();
                         break;
                     case "7":
+                        currentParticipants = organizer.refreshParticipantData();
+                        break;
+                    case "8":
+                        organizer.showParticipantStatistics();
+                        break;
+                    case "9":
                         return;
                     default:
                         System.out.println("Invalid choice.");
@@ -129,15 +140,51 @@ public class Main {
     private static void completeSurvey() {
         System.out.println("===== COMPLETE SURVEY =====");
 
-        try{
-            System.out.print("Enter Participant ID: ");
-            String id = scanner.nextLine().trim();
+        try {
+            // Check if CSV file exists or create new one
+            File csvFile = new File(PARTICIPANTS_CSV);
+            if (!csvFile.exists()) {
+                System.out.println("Creating new participants database...");
+            }
+
+            // Get existing participant IDs to avoid duplicates
+            List<String> existingIds = new ArrayList<>();
+            try {
+                existingIds = csvHandler.getAllParticipantIds(PARTICIPANTS_CSV);
+            } catch (IOException e) {
+                System.out.println("Could not read existing participants, starting fresh...");
+            }
+
+            // Participant ID with validation
+            String id;
+            while (true) {
+                System.out.print("Enter Participant ID (e.g., P101): ");
+                id = scanner.nextLine().trim().toUpperCase();
+
+                if (id.isEmpty()) {
+                    System.out.println("Participant ID cannot be empty. Please try again.");
+                    continue;
+                }
+
+                if (existingIds.contains(id)) {
+                    System.out.println("Participant ID '" + id + "' already exists. Please use a different ID.");
+                    System.out.println("Available IDs: " + existingIds);
+                    continue;
+                }
+                break;
+            }
 
             System.out.print("Enter Name: ");
             String name = scanner.nextLine().trim();
+            if (name.isEmpty()) {
+                throw new IllegalArgumentException("Name cannot be empty");
+            }
 
             System.out.print("Enter Email: ");
             String email = scanner.nextLine().trim();
+            if (email.isEmpty() || !email.contains("@")) {
+                throw new IllegalArgumentException("Valid email required");
+            }
 
             System.out.print("Enter Phone Number: ");
             String phone = scanner.nextLine().trim();
@@ -154,35 +201,65 @@ public class Main {
                     "I like making quick decisions and adapting in dynamic situations."
             };
 
-            for( int i=0; i <5; i++){
-                System.out.printf("\nQ%d: %s\n", i+1, questions[i]);
+            for (int i = 0; i < 5; i++) {
+                System.out.printf("\nQ%d: %s\n", i + 1, questions[i]);
                 System.out.print("Rating (1-5): ");
-                responses[i] = Integer.parseInt(scanner.nextLine().trim());
+                int rating = Integer.parseInt(scanner.nextLine().trim());
+                if (rating < 1 || rating > 5) {
+                    throw new IllegalArgumentException("Rating must be between 1-5");
+                }
+                responses[i] = rating;
             }
 
             System.out.print("\nEnter Preferred Game: ");
             String game = scanner.nextLine().trim();
+            if (game.isEmpty()) {
+                throw new IllegalArgumentException("Preferred game cannot be empty");
+            }
 
             System.out.print("Enter Preferred Role: ");
             String role = scanner.nextLine().trim();
+            if (role.isEmpty()) {
+                throw new IllegalArgumentException("Preferred role cannot be empty");
+            }
 
             System.out.print("Enter Skill Level (1-10): ");
             int skill = Integer.parseInt(scanner.nextLine().trim());
+            if (skill < 1 || skill > 10) {
+                throw new IllegalArgumentException("Skill level must be between 1-10");
+            }
 
             // Processing Survey
             int personalityScore = PersonalityClassifier.calculateFromSurvey(responses);
             PersonalityType personalityType = PersonalityClassifier.classify(personalityScore);
 
-            //Creating Participant
-            Participant participant = new Participant(id,name,email,phone,game,skill,role,personalityScore);
+            // Creating Participant
+            Participant participant = new Participant(id, name, email, phone, game, skill, role, personalityScore);
 
-            System.out.print("\n Survey Completed Successfully !");
-            System.out.println("Personality Score: " + personalityScore);
-            System.out.print("Personality Type: " + personalityType);
-            System.out.print("Participant: " + participant.toDisplayString());
+            // Save to CSV file
+            csvHandler.appendParticipantToCSV(participant, PARTICIPANTS_CSV);
 
-        }catch(Exception e){
+            //Update current participants list if it exists
+            if (currentParticipants != null) {
+                currentParticipants.add(participant);
+                System.out.println("✓ Participant added to current session data");
+            }
+
+            System.out.println("\nSURVEY COMPLETED SUCCESSFULLY!");
+            System.out.println("✓ Personality Score: " + personalityScore);
+            System.out.println("✓ Personality Type: " + personalityType);
+            System.out.println("✓ Participant: " + participant.toDisplayString());
+            System.out.println("✓ Data saved to: " + PARTICIPANTS_CSV);
+
+            // Show what happens next
+            System.out.println("\nNext Steps:");
+            System.out.println("1. Return to Organizer Portal");
+            System.out.println("2. Upload CSV again to include new participant");
+            System.out.println("3. Refresh Participant Data ");
+
+        } catch (Exception e) {
             System.out.println("Survey Error: " + e.getMessage());
+            System.out.println("Please try again with valid data.");
         }
     }
 

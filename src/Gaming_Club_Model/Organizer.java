@@ -14,6 +14,7 @@ public class Organizer extends BaseEntity {
     private TeamBuilder teamBuilder;
     private List<Team> currentTeams;
     private List<Participant> currentParticipants;
+    private static final String PARTICIPANTS_CSV = "participants_sample.csv";
 
     public Organizer(String id, String name) {
         super(id, name);
@@ -125,6 +126,50 @@ public class Organizer extends BaseEntity {
         teamBuilder.printAdvancedReport(currentTeams);
     }
 
+    public List<Participant> refreshParticipantData() {
+        try {
+            System.out.println("\nORGANIZER ACTION: Refreshing participant data...");
+            this.currentParticipants = csvHandler.loadParticipants(PARTICIPANTS_CSV);
+            System.out.println("SUCCESS: Refreshed " + currentParticipants.size() + " participants");
+            return currentParticipants;
+        } catch (Exception e) {
+            System.out.println("FAILED: Refresh data - " + e.getMessage());
+            throw new RuntimeException("Data refresh failed", e);
+        }
+    }
+
+    public void showParticipantStatistics() {
+        if (currentParticipants == null) {
+            System.out.println("No participant data loaded. Please upload CSV first.");
+            return;
+        }
+
+        System.out.println("\n=== PARTICIPANT STATISTICS ===");
+        System.out.println("Total Participants: " + currentParticipants.size());
+
+        // Count by personality type
+        long leaders = currentParticipants.stream()
+                .filter(p -> p.getPersonalityType() == PersonalityType.LEADER)
+                .count();
+        long balanced = currentParticipants.stream()
+                .filter(p -> p.getPersonalityType() == PersonalityType.BALANCED)
+                .count();
+        long thinkers = currentParticipants.stream()
+                .filter(p -> p.getPersonalityType() == PersonalityType.THINKER)
+                .count();
+
+        System.out.println("Personality Distribution:");
+        System.out.println("  - Leaders: " + leaders);
+        System.out.println("  - Balanced: " + balanced);
+        System.out.println("  - Thinkers: " + thinkers);
+
+        // Game distribution
+        System.out.println("Unique Games: " +
+                currentParticipants.stream()
+                        .map(Participant::getPreferredGame)
+                        .distinct()
+                        .count());
+    }
 
     @Override
     public boolean validate() {
