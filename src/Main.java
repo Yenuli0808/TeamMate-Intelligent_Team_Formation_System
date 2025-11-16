@@ -1,16 +1,198 @@
 import Gaming_Club_Model.Organizer;
 import Gaming_Club_Model.Participant;
-import Gaming_Club_Model.Survey;
+import Gaming_Club_Model.PersonalityType;
 import Gaming_Club_Model.Team;
 import Service.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
-public class Main{
+public class Main {
+    private static Scanner scanner = new Scanner(System.in);
+    private static CSVHandler csvHandler = new CSVHandler();
+
     public static void main(String[] args) {
-        System.out.println("=== TeamMate: Intelligent Team Formation System ===");
-        System.out.println("\n Demonstrating Core OOP Concepts and Functionality \n");
+        System.out.println("=====TeamMate: Intelligent Team Formation System=====");
+        System.out.println("===================================================");
+
+        showMainMenu();
+    }
+
+    private static void showMainMenu() {
+        while (true) {
+            System.out.println("\n==== MAIN MENU ===");
+            System.out.println("1. Organizer Portal");
+            System.out.println("2.Participant Portal");
+            System.out.println("3. Run System Demonstration");
+            System.out.println("4. Exist");
+
+            String choice = scanner.nextLine().trim();
+
+            switch (choice) {
+                case "1":
+                    organizerPortal();
+                    break;
+                case "2":
+                    participantPortal();
+                    break;
+                case "3":
+                    runAllDemonstration();
+                    break;
+                case "4":
+                    System.out.println("Thank You For Using TeamMate!");
+                    return;
+                default:
+                    System.out.println("Invalid choice. Try again.");
+            }
+        }
+    }
+
+    private static void organizerPortal() {
+        System.out.println("===== ORGANIZER PORTAL =====");
+
+        Organizer organizer = new Organizer("ORG001","Tournament Manager");
+
+        while (true) {
+            System.out.println("\nOrganizer Menu:");
+            System.out.println("1. Upload CSV File");
+            System.out.println("2. Set Team Formation Parameters");
+            System.out.println("3. Run Team Formation Algorithm");
+            System.out.println("4. View Formation Results");
+            System.out.println("5. Save Teams to CSV");
+            System.out.println("6. Generate Advanced Report");
+            System.out.println("7. Return to Main Menu");
+
+            String choice = scanner.nextLine().trim();
+
+            try{
+                switch (choice) {
+                    case "1":
+                        System.out.println("Enter CSV file path (e.g., participants_sample.csv): ");
+                        String csvFile = scanner.nextLine().trim();
+                        organizer.uploadCSV(csvFile);
+                        break;
+                    case "2":
+                        System.out.print("Enter Team Size: ");
+                        int teamSize = Integer.parseInt(scanner.nextLine().trim());
+                        organizer.setFormationParameters(teamSize);
+                        break;
+                    case "3":
+                        organizer.runTeamFormation();
+                        break;
+                    case "4":
+                        organizer.viewFormationResults();
+                        break;
+                    case "5":
+                        System.out.print("Enter output file name (e.g., my_teams.csv): ");
+                        String outputFile = scanner.nextLine().trim();
+                        organizer.saveTeams(outputFile);
+                        break;
+                    case "6":
+                        organizer.generateAdvancedReport();
+                        break;
+                    case "7":
+                        return;
+                    default:
+                        System.out.println("Invalid choice.");
+                }
+            }catch(Exception e){
+                System.out.println("ERROR: " + e.getMessage());
+                System.out.println("Please try again.");
+            }
+        }
+    }
+
+    private static void participantPortal() {
+        System.out.println("===== PARTICIPANT PORTAL =====");
+        System.out.println("1. Complete Survey");
+        System.out.println("2. View Team Assignment");
+
+        String choice = scanner.nextLine().trim();
+
+        switch (choice) {
+            case "1":
+                completeSurvey();
+                break;
+            case "2":
+                viewTeamAssignment();
+                break;
+            default:
+                System.out.println("Invalid choice.");
+        }
+    }
+
+    private static void completeSurvey() {
+        System.out.println("===== COMPLETE SURVEY =====");
+
+        try{
+            System.out.print("Enter Participant ID: ");
+            String id = scanner.nextLine().trim();
+
+            System.out.print("Enter Name: ");
+            String name = scanner.nextLine().trim();
+
+            System.out.print("Enter Email: ");
+            String email = scanner.nextLine().trim();
+
+            System.out.print("Enter Phone Number: ");
+            String phone = scanner.nextLine().trim();
+
+            System.out.println("\n--- Personality Survey ---");
+            System.out.println("Rate each statement from 1 (Strongly Disagree) to 5 (Strongly Agree)");
+
+            int[] responses = new int[5];
+            String[] questions = {
+                    "I enjoy taking the lead and guiding others during group activities.",
+                    "I prefer analyzing situations and coming up with strategic solutions.",
+                    "I work well with others and enjoy collaborative teamwork.",
+                    "I am calm under pressure and can help maintain team morale.",
+                    "I like making quick decisions and adapting in dynamic situations."
+            };
+
+            for( int i=0; i <5; i++){
+                System.out.printf("\nQ%d: %s\n", i+1, questions[i]);
+                System.out.print("Rating (1-5): ");
+                responses[i] = Integer.parseInt(scanner.nextLine().trim());
+            }
+
+            System.out.print("\nEnter Preferred Game: ");
+            String game = scanner.nextLine().trim();
+
+            System.out.print("Enter Preferred Role: ");
+            String role = scanner.nextLine().trim();
+
+            System.out.print("Enter Skill Level (1-10): ");
+            int skill = Integer.parseInt(scanner.nextLine().trim());
+
+            // Processing Survey
+            int personalityScore = PersonalityClassifier.calculateFromSurvey(responses);
+            PersonalityType personalityType = PersonalityClassifier.classify(personalityScore);
+
+            //Creating Participant
+            Participant participant = new Participant(id,name,email,phone,game,skill,role,personalityScore);
+
+            System.out.print("\n Survey Completed Successfully !");
+            System.out.println("Personality Score: " + personalityScore);
+            System.out.print("Personality Type: " + personalityType);
+            System.out.print("Participant: " + participant.toDisplayString());
+
+        }catch(Exception e){
+            System.out.println("Survey Error: " + e.getMessage());
+        }
+    }
+
+    private static void viewTeamAssignment() {
+        System.out.println("===== VIEW TEAM ASSIGNMENT =====");
+        System.out.print("Enter Participant ID: ");
+        String participantId = scanner.nextLine().trim();
+
+        System.out.println("Team assignment feature would lookup from formed teams database");
+        System.out.println("For demonstration, check the generated CSV files for team assignments");
+    }
+
+    private static void runAllDemonstration() {
+        System.out.println("\n=== SYSTEM DEMONSTRATIONS ===");
 
         demonstratePersonalityClassification();
         demonstrateParticipantCreation();
@@ -19,19 +201,19 @@ public class Main{
         demonstrateFileHandling();
         demonstrateAdvancedAlgorithm();
         demonstrateConcurrency();
-
         demonstrateOrganizerWorkflow();
         demonstrateCompleteCSVWorkflow();
 
+        System.out.println("\n All demonstrations completed successfully!");
     }
 
-    private static void demonstratePersonalityClassification(){
-        System.out.println("1. PERSONALITY CLASSIFICATION DEMONSTRATION");
+    private static void demonstratePersonalityClassification() {
+        System.out.println("\n1. PERSONALITY CLASSIFICATION DEMONSTRATION");
         System.out.println("--------------------------------------------");
 
         int[] testScores = {95,80,65,45,100,75};
 
-        for( int score: testScores ){
+        for (int score: testScores) {
             try{
                 var personality = PersonalityClassifier.classify(score);
                 System.out.printf("Score %3d -> %-8s(Range: %d-%d)%n",score,personality,personality.getMinScore(),personality.getMaxScore());
@@ -42,12 +224,12 @@ public class Main{
         System.out.println();
     }
 
-    private static void demonstrateParticipantCreation(){
-        System.out.println("2. PARTICIPANT CREATION DEMONSTRATION");
+    private static void demonstrateParticipantCreation() {
+        System.out.println("\n2. PARTICIPANT CREATION DEMONSTRATION");
         System.out.println("------------------------------------------");
 
         try{
-            Participant participant1 = new Participant("P001","John Doe","john@university.edu","0701053109","Valorant",8,"Strategist",85);
+            Participant participant1 = new Participant("P001","John Doe","john@university.edu","0731093108","Valorant",8,"Strategist",85);
             System.out.println("Participant 1 created: " + participant1);
 
             try{
@@ -58,21 +240,22 @@ public class Main{
         }catch (Exception e){
             System.out.println("Error creating Participant: " + e.getMessage());
         }
+
         System.out.println();
     }
 
-    private static void demonstrateTeamFormation(){
-        System.out.println("3. TEAM FORMATION ALGORITHM DEMONSTRATION");
+    private static void demonstrateTeamFormation() {
+        System.out.println("\n3. TEAM FORMATION ALGORITHM DEMONSTRATION");
         System.out.println("----------------------------------------");
 
         try{
             List<Participant> participants = Arrays.asList(
-                    new Participant("P001", "Alice", "alice@edu.com","0701053109", "Valorant", 8, "Strategist", 95),
-                    new Participant("P002", "Bob", "bob@edu.com","0701053109", "CS:GO", 6, "Attacker", 75),
-                    new Participant("P003", "Charlie", "charlie@edu.com","0701053109", "DOTA 2", 7, "Defender", 65),
-                    new Participant("P004", "Diana", "diana@edu.com","0701053109", "Valorant", 9, "Supporter", 85),
-                    new Participant("P005", "Eve", "eve@edu.com","0701053109", "CS:GO", 5, "Coordinator", 70),
-                    new Participant("P006", "Frank", "frank@edu.com","0701053109", "DOTA 2", 8, "Strategist", 90)
+                    new Participant("P001", "Alice", "alice@edu.com","07167875649", "Valorant", 8, "Strategist", 95),
+                    new Participant("P002", "Bob", "bob@edu.com","07123149065", "CS:GO", 6, "Attacker", 75),
+                    new Participant("P003", "Charlie", "charlie@edu.com","0724865213", "DOTA 2", 7, "Defender", 65),
+                    new Participant("P004", "Diana", "diana@edu.com","0701053409", "Valorant", 9, "Supporter", 85),
+                    new Participant("P005", "Eve", "eve@edu.com","0741065169", "CS:GO", 5, "Coordinator", 70),
+                    new Participant("P006", "Frank", "frank@edu.com","0771053109", "DOTA 2", 8, "Strategist", 90)
             );
             System.out.printf("Forming teams from %d participants...%n", participants.size());
 
@@ -86,18 +269,18 @@ public class Main{
                 System.out.println("---");
             }
         } catch (Exception e) {
-            System.out.println("✗ Error in team formation: " + e.getMessage());
+            System.out.println("Error in team formation: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    private static void demonstrateInterfaces(){
-        System.out.println("4. INTERFACES DEMONSTRATION");
+    private static void demonstrateInterfaces() {
+        System.out.println("\n4. INTERFACES DEMONSTRATION");
         System.out.println("--------------------------------------");
 
         List<Participant> participants = Arrays.asList(
-                new Participant("P001", "Alice", "alice@edu.com","0701053109", "Valorant", 8, "Strategist", 95),
-                new Participant("P002", "Bob", "bob@edu.com","0701053109", "CS:GO", 6, "Attacker", 75)
+                new Participant("P001", "Alice", "alice@edu.com","0751053107", "Valorant", 8, "Strategist", 95),
+                new Participant("P002", "Bob", "bob@edu.com","0741053199", "CS:GO", 6, "Attacker", 75)
         );
 
         System.out.println("Formattable Interface Examples:");
@@ -118,8 +301,8 @@ public class Main{
         System.out.println(" - " + obj.toDisplayString());
     }
 
-    private static void demonstrateFileHandling(){
-        System.out.println("5. FILE HANDLING DEMONSTRATION");
+    private static void demonstrateFileHandling() {
+        System.out.println("\n5. FILE HANDLING DEMONSTRATION");
         System.out.println("--------------------------------------");
 
         try{
@@ -130,11 +313,11 @@ public class Main{
             System.out.printf("Successfully loaded %d participants from CSV file%n", participants.size());
 
             TeamBuilder builder = new TeamBuilder(participants, 4);
-            List<Team> teams = builder.formBalancedTeams();  // Declare teams here
+            List<Team> teams = builder.formBalancedTeams();
 
             System.out.println("Saving teams to output CSV...");
-            csvHandler.saveTeamsToCSV(teams, "formed_teams.csv");
-            System.out.println("SUCCESS: Saved " + teams.size() + " teams to 'formed_teams.csv'");
+            csvHandler.saveTeamsToCSV(teams, "formed_teams_demo.csv");
+            System.out.println("SUCCESS: Saved " + teams.size() + " teams to 'formed_teams_demo.csv'");
 
             System.out.println("\nSample of loaded data (first 3 participants):");
             for (int i = 0; i < Math.min(3, participants.size()); i++) {
@@ -142,21 +325,21 @@ public class Main{
             }
         }catch (Exception e){
             System.out.println("FILE HANDLING ERROR: " + e.getMessage());
-            System.out.println("Note:Make sure 'participants_sample.csv' is in your project root directory");
+            System.out.println("Note: Make sure 'participants_sample.csv' is in your project root directory");
         }
     }
 
     private static void demonstrateAdvancedAlgorithm(){
-        System.out.println("6. ADVANCED ALGORITHM DEMONSTRATION");
+        System.out.println("\n6. ADVANCED ALGORITHM DEMONSTRATION");
         System.out.println("-------------------------------------");
 
         List<Participant> participants = Arrays.asList(
-                new Participant("P001", "Alice", "alice@edu.com","0701053109", "Valorant", 8, "Strategist", 95),
-                new Participant("P002", "Bob", "bob@edu.com","0701053109", "Valorant", 6, "Attacker", 75),
-                new Participant("P003", "Charlie", "charlie@edu.com","0701053109", "Valorant", 7, "Defender", 65),
-                new Participant("P004", "Diana", "diana@edu.com", "0701053109","CS:GO", 9, "Supporter", 85),
-                new Participant("P005", "Eve", "eve@edu.com","0701053109", "CS:GO", 5, "Coordinator", 92),
-                new Participant("P006", "Frank", "frank@edu.com","0701053109", "DOTA 2", 8, "Strategist", 88)
+                new Participant("P001", "Alice", "alice@edu.com","0711153109", "Valorant", 8, "Strategist", 95),
+                new Participant("P002", "Bob", "bob@edu.com","0721253109", "Valorant", 6, "Attacker", 75),
+                new Participant("P003", "Charlie", "charlie@edu.com","0731353109", "Valorant", 7, "Defender", 65),
+                new Participant("P004", "Diana", "diana@edu.com", "0741453109","CS:GO", 9, "Supporter", 85),
+                new Participant("P005", "Eve", "eve@edu.com","0751553109", "CS:GO", 5, "Coordinator", 92),
+                new Participant("P006", "Frank", "frank@edu.com","0761653109", "DOTA 2", 8, "Strategist", 88)
         );
 
         System.out.println("Using Advanced Algorithm with 3 Simple Rules:");
@@ -174,16 +357,17 @@ public class Main{
         List<Team> basicTeams = advancedBuilder.formBalancedTeams();
         System.out.println("Basic Algorithm: Focuses only on skill balance");
         System.out.println("Advanced Algorithm: Adds game variety + role diversity + personality mix");
+
     }
 
-    private static void demonstrateConcurrency() {
+    private static void demonstrateConcurrency(){
         System.out.println("\n7. BASIC CONCURRENCY DEMONSTRATION");
         System.out.println("-----------------------------------");
 
         List<Participant> participants = Arrays.asList(
-                new Participant("P001", "Alice", "alice@edu.com","0701053109", "Valorant", 8, "Strategist", 95),
-                new Participant("P002", "Bob", "bob@edu.com","0701053109", "CS:GO", 6, "Attacker", 75),
-                new Participant("P003", "Charlie", "charlie@edu.com","0701053109", "DOTA 2", 7, "Defender", 65)
+                new Participant("P001", "Alice", "alice@edu.com","0771753109", "Valorant", 8, "Strategist", 95),
+                new Participant("P002", "Bob", "bob@edu.com","0791953109", "CS:GO", 6, "Attacker", 75),
+                new Participant("P003", "Charlie", "charlie@edu.com","0781853109", "DOTA 2", 7, "Defender", 65)
         );
         System.out.println("Starting team formation in background thread...");
 
@@ -210,102 +394,55 @@ public class Main{
         }
     }
 
-    private static void demonstrateOrganizerWorkflow() {
+    private static void demonstrateOrganizerWorkflow(){
         System.out.println("\n8. ORGANIZER WORKFLOW DEMONSTRATION");
         System.out.println("====================================");
-        System.out.println("Demonstrating all Organizer use cases from UML diagrams...");
 
         try {
-            // Create organizer (actor from use cases)
             Organizer organizer = new Organizer("ORG001", "Tournament Manager");
 
-            // USE CASE 1: Upload CSV File
             organizer.uploadCSV("participants_sample.csv");
-
-            // USE CASE 2: Define Team Formation Parameters
             organizer.setFormationParameters(4);
-
-            // USE CASE 3: Run Team Formation Algorithm
             organizer.runTeamFormation();
-
-            // USE CASE 5: View Formation Results
             organizer.viewFormationResults();
-
-            // USE CASE: Generate Advanced Report
             organizer.generateAdvancedReport();
+            organizer.saveTeams("organized_teams_demo.csv");
 
-            // USE CASE 4: Save Teams to CSV
-            organizer.saveTeams("organized_teams.csv");
-
-            System.out.println("\nORGANIZER WORKFLOW COMPLETED!");
-            System.out.println("All use cases successfully executed by Organizer actor");
-
+            System.out.println("\n ORGANIZER WORKFLOW COMPLETED!");
         } catch (Exception e) {
             System.out.println("Organizer workflow failed: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
-    private static void demonstrateCompleteCSVWorkflow() {
-        System.out.println("\nCOMPLETE CSV WORKFLOW DEMONSTRATION");
+    private static void demonstrateCompleteCSVWorkflow(){
+        System.out.println("\n9. COMPLETE CSV WORKFLOW DEMONSTRATION");
         System.out.println("======================================");
 
         try {
             CSVHandler csvHandler = new CSVHandler();
 
-            // 1. Load from input CSV
             System.out.println("1. Loading participants from CSV...");
             List<Participant> participants = csvHandler.loadParticipants("participants_sample.csv");
             System.out.println(" Loaded: " + participants.size() + " participants");
 
-            // 2. Process teams
-            System.out.println("2.Forming balanced teams...");
+            System.out.println("2. Forming balanced teams...");
             TeamBuilder builder = new TeamBuilder(participants, 4);
             List<Team> teams = builder.formAdvancedTeams(participants);
             System.out.println(" Formed: " + teams.size() + " teams");
 
-            // 3. Save to output CSV
-            System.out.println("3.Saving teams to output CSV...");
-            csvHandler.saveTeamsToCSV(teams, "formed_teams.csv");
-            System.out.println("Saved: formed_teams.csv");
+            System.out.println("3. Saving teams to output CSV...");
+            csvHandler.saveTeamsToCSV(teams, "complete_workflow_teams.csv");
+            System.out.println(" Saved: complete_workflow_teams.csv");
 
-            // 4. Show sample output
-            System.out.println("\n4.Sample Team Output:");
+            System.out.println("\n4. Sample Team Output:");
             if (!teams.isEmpty()) {
                 System.out.println(teams.get(0).toDetailedString());
             }
 
-            System.out.println("\nCSV WORKFLOW COMPLETED SUCCESSFULLY!");
-            System.out.println("Input: participants_sample.csv → Processing → Output: formed_teams.csv");
-
+            System.out.println("\n✓ CSV WORKFLOW COMPLETED SUCCESSFULLY!");
         } catch (Exception e) {
             System.out.println("CSV workflow failed: " + e.getMessage());
         }
 
-    }
-
-    private static void demonstrateSurveyWorkflow() {
-        System.out.println("SURVEY WORKFLOW DEMONSTRATION");
-        System.out.println("-----------------------------");
-
-        // Create survey with personal information
-        Survey survey = new Survey("P201",new int[]{5, 4, 3, 5, 4},"Valorant","Strategist",8);
-
-        // Process survey to create participant
-        Participant participant = survey.processSurvey();
-        System.out.println("Survey processed: " + participant.toDisplayString());
-    }
-
-    private static void demonstrateParticipantPortal() {
-        System.out.println("PARTICIPANT PORTAL DEMONSTRATION");
-        System.out.println("--------------------------------");
-
-        ParticipantPortal portal = new ParticipantPortal();
-        try {
-            String teamInfo = portal.getTeamAssignmentDetails("P001");
-            System.out.println("Team Assignment: " + teamInfo);
-        } catch (Exception e) {
-            System.out.println("No team assignment: " + e.getMessage());
-        }
     }
 }
