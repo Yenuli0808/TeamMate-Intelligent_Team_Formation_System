@@ -97,7 +97,7 @@ public class TeamBuilder implements TeamFormationStrategy {
 
     public CompletableFuture<Void> processSurveyDataConcurrently(List<Participant> surveyData) {
         return CompletableFuture.runAsync(() -> {
-            System.out.println("🔄 Processing survey data for " + surveyData.size() + " participants...");
+            System.out.println("Processing survey data for " + surveyData.size() + " participants...");
             try {
                 // Simulate survey data processing
                 Thread.sleep(300);
@@ -334,14 +334,12 @@ public class TeamBuilder implements TeamFormationStrategy {
         return leaders <= 1 && thinkers >= 0 && balanced >= 1;
     }
 
-    // ===== CLEANUP =====
     public void shutdown() {
         if (executor != null && !executor.isShutdown()) {
             executor.shutdown();
         }
     }
 
-    // ===== GETTERS =====
     public int getTeamSize() {
         return teamSize;
     }
