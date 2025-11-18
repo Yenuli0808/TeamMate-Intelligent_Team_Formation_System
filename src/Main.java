@@ -242,14 +242,14 @@ public class Main {
             //Update current participants list if it exists
             if (currentParticipants != null) {
                 currentParticipants.add(participant);
-                System.out.println("✓ Participant added to current session data");
+                System.out.println("Participant added to current session data");
             }
 
             System.out.println("\nSURVEY COMPLETED SUCCESSFULLY!");
-            System.out.println("✓ Personality Score: " + personalityScore);
-            System.out.println("✓ Personality Type: " + personalityType);
-            System.out.println("✓ Participant: " + participant.toDisplayString());
-            System.out.println("✓ Data saved to: " + PARTICIPANTS_CSV);
+            System.out.println("Personality Score: " + personalityScore);
+            System.out.println("Personality Type: " + personalityType);
+            System.out.println("Participant: " + participant.toDisplayString());
+            System.out.println("Data saved to: " + PARTICIPANTS_CSV);
 
             // Show what happens next
             System.out.println("\nNext Steps:");
@@ -334,7 +334,7 @@ public class Main {
     }
 
     private static void showParticipantSuggestions(ParticipantPortal portal) {
-        System.out.println("\n💡 Suggestions - Available Participants with Teams:");
+        System.out.println("\nSuggestions - Available Participants with Teams:");
 
         // Get first 10 participants who have team assignments
         portal.getParticipantTeams().keySet().stream()
