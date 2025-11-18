@@ -83,7 +83,7 @@ public class TeamBuilder implements TeamFormationStrategy {
     // ===== CONCURRENT PROCESSING (REQUIREMENT) =====
     public CompletableFuture<List<Team>> formTeamsConcurrently() {
         return CompletableFuture.supplyAsync(() -> {
-            System.out.println("🔄 Processing team formation in background thread...");
+            System.out.println("Processing team formation in background thread...");
             try {
                 // Simulate processing time for large datasets
                 Thread.sleep(500);
