@@ -158,9 +158,13 @@ public class Main {
             // Participant ID with validation
             String id;
             while (true) {
-                System.out.print("Enter Participant ID (e.g., P101): ");
+                System.out.print("Enter Participant ID (e.g., P102): ");
                 id = scanner.nextLine().trim().toUpperCase();
 
+                if (!id.matches("P\\d+")) {
+                    System.out.println("Invalid ID format! Must start with 'P' followed by numbers (e.g., P102)");
+                    continue;
+                }
                 if (id.isEmpty()) {
                     System.out.println("Participant ID cannot be empty. Please try again.");
                     continue;
@@ -174,20 +178,29 @@ public class Main {
                 break;
             }
 
+            //Participant name validation
             System.out.print("Enter Name: ");
             String name = scanner.nextLine().trim();
             if (name.isEmpty()) {
                 throw new IllegalArgumentException("Name cannot be empty");
             }
+            if (!name.matches("[a-zA-Z\\s]+")) {
+                throw new IllegalArgumentException("Name can only contain letters and spaces");
+            }
 
+            //Email validation
             System.out.print("Enter Email: ");
             String email = scanner.nextLine().trim();
             if (email.isEmpty() || !email.contains("@")) {
                 throw new IllegalArgumentException("Valid email required");
             }
 
+            //Phone Number Validation
             System.out.print("Enter Phone Number: ");
             String phone = scanner.nextLine().trim();
+            if (!phone.matches("\\d{10}")) {
+                throw new IllegalArgumentException("Phone number must be exactly 10 digits");
+            }
 
             System.out.println("\n--- Personality Survey ---");
             System.out.println("Rate each statement from 1 (Strongly Disagree) to 5 (Strongly Agree)");
