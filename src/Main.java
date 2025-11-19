@@ -179,27 +179,49 @@ public class Main {
             }
 
             //Participant name validation
-            System.out.print("Enter Name: ");
-            String name = scanner.nextLine().trim();
-            if (name.isEmpty()) {
-                throw new IllegalArgumentException("Name cannot be empty");
-            }
-            if (!name.matches("[a-zA-Z\\s]+")) {
-                throw new IllegalArgumentException("Name can only contain letters and spaces");
+            String name;
+            while (true) {
+                System.out.print("Enter Name: ");
+                name = scanner.nextLine().trim();
+
+                if (name.isEmpty()) {
+                    System.out.println("Name cannot be empty. Please try again.");
+                    continue;
+                }
+                if (!name.matches("[a-zA-Z\\s]+")) {
+                    System.out.println("Name can only contain letters and spaces. Please try again.");
+                    continue;
+                }
+                break;
             }
 
             //Email validation
-            System.out.print("Enter Email: ");
-            String email = scanner.nextLine().trim();
-            if (email.isEmpty() || !email.contains("@")) {
-                throw new IllegalArgumentException("Valid email required");
+            String email;
+            while (true) {
+                System.out.print("Enter Email: ");
+                email = scanner.nextLine().trim();
+
+                if (email.isEmpty()) {
+                    System.out.println("Email cannot be empty. Please try again.");
+                    continue;
+                }
+                if (!email.contains("@")) {
+                    System.out.println("Valid email required (must contain '@'). Please try again.");
+                    continue;
+                }
+                break;
             }
 
             //Phone Number Validation
-            System.out.print("Enter Phone Number: ");
-            String phone = scanner.nextLine().trim();
-            if (!phone.matches("\\d{10}")) {
-                throw new IllegalArgumentException("Phone number must be exactly 10 digits");
+            String phone;
+            while (true) {
+                System.out.print("Enter Phone Number: ");
+                phone = scanner.nextLine().trim();
+                if (!phone.matches("\\d{10}")) {
+                    System.out.println("Phone number must be exactly 10 digits. Please try again.");
+                    continue;
+                }
+                break;
             }
 
             System.out.println("\n--- Personality Survey ---");
@@ -214,32 +236,69 @@ public class Main {
                     "I like making quick decisions and adapting in dynamic situations."
             };
 
+            //rating validation
             for (int i = 0; i < 5; i++) {
-                System.out.printf("\nQ%d: %s\n", i + 1, questions[i]);
-                System.out.print("Rating (1-5): ");
-                int rating = Integer.parseInt(scanner.nextLine().trim());
-                if (rating < 1 || rating > 5) {
-                    throw new IllegalArgumentException("Rating must be between 1-5");
+                while (true) {
+                    System.out.printf("\nQ%d: %s\n", i + 1, questions[i]);
+                    System.out.print("Rating (1-5): ");
+                    String ratingInput = scanner.nextLine().trim();
+
+                    try {
+                        int rating = Integer.parseInt(ratingInput);
+                        if (rating < 1 || rating > 5) {
+                            System.out.println("Rating must be between 1-5. Please try again.");
+                            continue;
+                        }
+                        responses[i] = rating;
+                        break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Please enter a valid number between 1-5.");
+                    }
                 }
-                responses[i] = rating;
             }
 
-            System.out.print("\nEnter Preferred Game: ");
-            String game = scanner.nextLine().trim();
-            if (game.isEmpty()) {
-                throw new IllegalArgumentException("Preferred game cannot be empty");
+            //Preferred Game Validation
+            String game;
+            while (true) {
+                System.out.print("\nEnter Preferred Game: ");
+                game = scanner.nextLine().trim();
+
+                if (game.isEmpty()) {
+                    System.out.println("Preferred game cannot be empty. Please try again.");
+                    continue;
+                }
+                break;
             }
 
-            System.out.print("Enter Preferred Role: ");
-            String role = scanner.nextLine().trim();
-            if (role.isEmpty()) {
-                throw new IllegalArgumentException("Preferred role cannot be empty");
+            //Preferred Role Validation
+            String role;
+            while (true) {
+                System.out.print("Enter Preferred Role: ");
+                role = scanner.nextLine().trim();
+
+                if (role.isEmpty()) {
+                    System.out.println("Preferred role cannot be empty. Please try again.");
+                    continue;
+                }
+                break;
             }
 
-            System.out.print("Enter Skill Level (1-10): ");
-            int skill = Integer.parseInt(scanner.nextLine().trim());
-            if (skill < 1 || skill > 10) {
-                throw new IllegalArgumentException("Skill level must be between 1-10");
+            //Skill Level Validation
+            int skill;
+            while (true) {
+                System.out.print("Enter Skill Level (1-10): ");
+                String skillInput = scanner.nextLine().trim();
+
+                try {
+                    skill = Integer.parseInt(skillInput);
+                    if (skill < 1 || skill > 10) {
+                        System.out.println("Skill level must be between 1-10. Please try again.");
+                        continue;
+                    }
+                    break;
+                } catch (NumberFormatException e) {
+                    System.out.println("Please enter a valid number between 1-10.");
+                }
             }
 
             // Processing Survey
