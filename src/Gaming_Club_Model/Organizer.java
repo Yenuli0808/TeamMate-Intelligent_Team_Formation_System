@@ -50,8 +50,8 @@ public class Organizer extends BaseEntity {
             throw new IllegalStateException("Please upload participant data first");
         }
 
-        if(teamSize < Constant.MAX_TEAM_SIZE){
-            throw new IllegalArgumentException("Team size cannot be less than "+Constant.MAX_TEAM_SIZE);
+        if(teamSize < Constant.MIN_TEAM_SIZE){
+            throw new IllegalArgumentException("Team size cannot be less than "+Constant.MIN_TEAM_SIZE);
         }
         if(teamSize > Constant.MAX_TEAM_SIZE){
             throw new IllegalArgumentException("Team size cannot be greater than "+Constant.MAX_TEAM_SIZE);
@@ -77,6 +77,7 @@ public class Organizer extends BaseEntity {
         System.out.println("\nORGANIZER ACTION: Running team formation algorithm...");
 
         this.currentTeams = teamBuilder.formAdvancedTeams();
+        teamBuilder.checkRoleDiversity(currentTeams);
         System.out.println("SUCCESS: Formed " + currentTeams.size() + " balanced teams");
         return currentTeams;
     }

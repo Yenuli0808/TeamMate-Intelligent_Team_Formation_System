@@ -1,3 +1,4 @@
+import Constant.Constant;
 import Gaming_Club_Model.Organizer;
 import Gaming_Club_Model.Participant;
 import Gaming_Club_Model.PersonalityType;
@@ -81,9 +82,26 @@ public class Main {
                         currentParticipants = organizer.uploadCSV(csvFile);
                         break;
                     case "2":
-                        System.out.print("Enter Team Size: ");
-                        int teamSize = Integer.parseInt(scanner.nextLine().trim());
-                        organizer.setFormationParameters(teamSize);
+                        System.out.print("Enter Team Size (min: " + Constant.MIN_TEAM_SIZE + ", max: " + Constant.MAX_TEAM_SIZE + "): ");
+                        int teamSize;
+                        while (true){
+                            try{
+                                String teamSIzeInput = scanner.nextLine().trim();
+                                teamSize = Integer.parseInt(teamSIzeInput);
+
+                                organizer.setFormationParameters(teamSize);
+                                break;
+                            }catch (NumberFormatException e){
+                                System.out.println("Please enter a valid number.");
+                                System.out.print("Enter Team Size (min: " + Constant.MIN_TEAM_SIZE + ", max: " + Constant.MAX_TEAM_SIZE + "): ");
+                            }catch (IllegalArgumentException e){
+                                System.out.println( e.getMessage());
+                                System.out.print("Enter Team Size (min: " + Constant.MIN_TEAM_SIZE + ", max: " + Constant.MAX_TEAM_SIZE + "): ");
+                            }catch (IllegalStateException e) {
+                                System.out.println( e.getMessage());
+                                break;
+                            }
+                        }
                         break;
                     case "3":
                         currentTeams = organizer.runTeamFormation();

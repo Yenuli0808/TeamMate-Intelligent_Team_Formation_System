@@ -1,5 +1,6 @@
 package Service;
 
+import Constant.Constant;
 import Gaming_Club_Model.Participant;
 import Gaming_Club_Model.PersonalityType;
 import Gaming_Club_Model.Survey;
@@ -21,8 +22,14 @@ public class TeamBuilder implements TeamFormationStrategy {
         if(participants == null || participants.isEmpty()) {
             throw new IllegalArgumentException("Participants cannot be empty");
         }
-        if(teamSize < 2 || teamSize > 11) {
-            throw new IllegalArgumentException("Team size must be between 2-10");
+        if(teamSize < Constant.MIN_TEAM_SIZE) {
+            throw new IllegalArgumentException("Team size cannot be less than " + Constant.MIN_TEAM_SIZE + ". Minimum team size is " + Constant.MIN_TEAM_SIZE + " players.");
+        }
+        if(teamSize > Constant.MAX_TEAM_SIZE) {
+            throw new IllegalArgumentException("Team size cannot be greater than " + Constant.MAX_TEAM_SIZE + ". Maximum team size is " + Constant.MAX_TEAM_SIZE + " players.");
+        }
+        if(teamSize > participants.size()) {
+            throw new IllegalArgumentException("Team size cannot be greater than number of participants");
         }
 
         this.participants = new ArrayList<>(participants);
@@ -202,6 +209,17 @@ public class TeamBuilder implements TeamFormationStrategy {
         else if (currentAvg < 7.0) score += 10;
 
         return score;
+    }
+
+    public void checkRoleDiversity(List<Team> teams) {
+        System.out.println("\n=== ROLE DIVERSITY CHECK ===");
+        for (Team team : teams) {
+            int roleCount = team.getUniqueRoles().size();
+            int minRequired = Math.min(Constant.MIN_DIFFERENT_ROLES, team.getMaxSize());
+            String status = roleCount >= minRequired ? "✅ PASS" : "⚠️ IDEAL NOT MET";
+            System.out.printf("%s: %d unique roles (ideal: %d) - %s%n",
+                    team.getName(), roleCount, minRequired, status);
+        }
     }
 
     private int calculatePersonalityScore(Team team, Participant newPlayer) {
