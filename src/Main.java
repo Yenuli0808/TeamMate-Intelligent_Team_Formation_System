@@ -260,6 +260,8 @@ public class Main {
             //Preferred Game Validation
             String game;
             while (true) {
+                System.out.print("===========================================================================");
+                System.out.print("\nGame selection options: Chess, FIFA, BasketBall, CS:GO, DOTA 2,Volorant");
                 System.out.print("\nEnter Preferred Game: ");
                 game = scanner.nextLine().trim();
 
@@ -273,6 +275,13 @@ public class Main {
             //Preferred Role Validation
             String role;
             while (true) {
+                System.out.print("=======================================================================================================");
+                System.out.print("\nRole selection Options: \n ");
+                System.out.println("1.Strategist: Focuses on tactics and planning. Keeps the bigger picture in mind during gameplay\n" +
+                        "2.Attacker:Frontline player. Good reflexes, offensive tactics, quick execution.\n" +
+                        "3.Defender: Protects and supports team stability. Good under pressure and team-focused\n" +
+                        "4.Supporter: Jack-of-all-trades. Adapts roles, ensures smooth coordination\n" +
+                        "5.Coordinator: Communication lead. Keeps the team informed and organized in real time\n");
                 System.out.print("Enter Preferred Role: ");
                 role = scanner.nextLine().trim();
 
@@ -286,7 +295,8 @@ public class Main {
             //Skill Level Validation
             int skill;
             while (true) {
-                System.out.print("Enter Skill Level (1-10): ");
+                System.out.print("========================================================================================================");
+                System.out.print("\n Enter Skill Level (1-10): ");
                 String skillInput = scanner.nextLine().trim();
 
                 try {

@@ -21,8 +21,8 @@ public class TeamBuilder implements TeamFormationStrategy {
         if(participants == null || participants.isEmpty()) {
             throw new IllegalArgumentException("Participants cannot be empty");
         }
-        if(teamSize < 2) {
-            throw new IllegalArgumentException("Team size cannot be less than 2");
+        if(teamSize < 2 || teamSize > 11) {
+            throw new IllegalArgumentException("Team size must be between 2-10");
         }
 
         this.participants = new ArrayList<>(participants);
