@@ -1,5 +1,6 @@
 package Gaming_Club_Model;
 
+import Constant.Constant;
 import Service.CSVHandler;
 import Service.TeamBuilder;
 
@@ -47,6 +48,16 @@ public class Organizer extends BaseEntity {
     public void setFormationParameters(int teamSize) {
         if (currentParticipants == null || currentParticipants.isEmpty()) {
             throw new IllegalStateException("Please upload participant data first");
+        }
+
+        if(teamSize < Constant.MAX_TEAM_SIZE){
+            throw new IllegalArgumentException("Team size cannot be less than "+Constant.MAX_TEAM_SIZE);
+        }
+        if(teamSize > Constant.MAX_TEAM_SIZE){
+            throw new IllegalArgumentException("Team size cannot be greater than "+Constant.MAX_TEAM_SIZE);
+        }
+        if (teamSize > currentParticipants.size()) {
+            throw new IllegalArgumentException("Team size (" + teamSize + ") cannot be greater than number of participants (" + currentParticipants.size() + ")");
         }
 
         System.out.println("\nORGANIZER ACTION: Setting formation parameters...");
