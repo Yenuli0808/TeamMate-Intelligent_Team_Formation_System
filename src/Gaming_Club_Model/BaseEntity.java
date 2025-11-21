@@ -11,10 +11,6 @@ public abstract class BaseEntity {
 
     public abstract boolean validate();
 
-    public String getBasicInfo(){
-        return String.format("ID: %s , Name: %s", id, name);
-    }
-
     public String getId(){
         return id;
     }
