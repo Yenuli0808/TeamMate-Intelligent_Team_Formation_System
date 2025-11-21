@@ -190,9 +190,18 @@ public class Main {
                 }
 
                 if (existingIds.contains(id)) {
-                    System.out.println("Participant ID '" + id + "' already exists. Please use a different ID.");
-                    System.out.println("Available IDs: " + existingIds);
-                    continue;
+                    System.out.println("--------------------------------------------------------------------");
+                    System.out.println("Participant ID '" + id + "' already exists in system");
+                    System.out.println("This will UPDATE your existing survey information.");
+                    System.out.print("Do you want to continue and update your information? (yes/no): ");
+
+                    String updateChoice = scanner.nextLine().trim();
+
+                    if(!updateChoice.equalsIgnoreCase("yes") && !updateChoice.equalsIgnoreCase("y")){
+                        System.out.println("Update cancelled. Returning to menu...");
+                        return;
+                    }
+                    System.out.println("Proceeding with information update...");
                 }
                 break;
             }
@@ -361,8 +370,16 @@ public class Main {
             // Creating Participant
             Participant participant = new Participant(id, name, email, phone, game, skill, role, personalityScore);
 
-            // Save to CSV file
-            csvHandler.appendParticipantToCSV(participant, PARTICIPANTS_CSV);
+            // Save OR UPDATE in CSV file
+            if (existingIds.contains(id)) {
+                // Update existing participant
+                csvHandler.updateParticipantInCSV(participant, PARTICIPANTS_CSV);
+                System.out.println("SURVEY UPDATED SUCCESSFULLY!");
+            } else {
+                // Add new participant
+                csvHandler.appendParticipantToCSV(participant, PARTICIPANTS_CSV);
+                System.out.println("SURVEY COMPLETED SUCCESSFULLY!");
+            }
 
             //Update current participants list if it exists
             if (currentParticipants != null) {

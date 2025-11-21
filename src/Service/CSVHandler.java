@@ -472,4 +472,32 @@ public class CSVHandler {
         return ids;
     }
 
+    /**
+     * Update existing participant in CSV file
+     */
+    public void updateParticipantInCSV(Participant updatedParticipant, String filename) throws IOException {
+        String actualPath = resolveFilePath(FileSource.LOCAL_FILE, filename);
+
+        // Read all participants from CSV
+        List<Participant> allParticipants = loadParticipants(actualPath);
+
+        // Find and replace the participant with same ID
+        boolean found = false;
+        for (int i = 0; i < allParticipants.size(); i++) {
+            if (allParticipants.get(i).getId().equalsIgnoreCase(updatedParticipant.getId())) {
+                allParticipants.set(i, updatedParticipant);
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            throw new IllegalArgumentException("Participant not found for update: " + updatedParticipant.getId());
+        }
+
+        // Write all participants back to CSV
+        exportParticipantsToCSV(allParticipants, actualPath);
+        System.out.println("✓ Successfully updated participant: " + updatedParticipant.getId());
+    }
+
 }
