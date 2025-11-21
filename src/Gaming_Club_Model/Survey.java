@@ -24,10 +24,6 @@ public class Survey {
         this.skillLevel = skillLevel;
     }
 
-    public boolean isValid() {
-        return personalityResponses.length == 5 && skillLevel >=1 && skillLevel <=10;
-    }
-
     public Participant processSurvey() {
         // Calculate personality score from responses
         int personalityScore = PersonalityClassifier.calculateFromSurvey(personalityResponses);
