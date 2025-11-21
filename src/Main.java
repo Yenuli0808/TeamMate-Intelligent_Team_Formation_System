@@ -9,6 +9,7 @@ import Service.Formattable;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     private static Scanner scanner = new Scanner(System.in);
@@ -363,7 +364,7 @@ public class Main {
         }
     }
 
-    private static void viewTeamAssignment() {
+    private static void viewTeamAssignment(){
         System.out.println("===== VIEW TEAM ASSIGNMENT =====");
 
         // Check if teams are available
@@ -373,82 +374,121 @@ public class Main {
             return;
         }
 
-        if (currentParticipants == null || currentParticipants.isEmpty()) {
-            System.out.println("No participant data available.");
-            return;
-        }
+        // Initialize participant portal
+        ParticipantPortal portal = new ParticipantPortal();
+        portal.initializeData(currentTeams, currentParticipants);
 
-        System.out.print("Enter Participant ID: ");
-        String searchInput = scanner.nextLine().trim();
+        //Get ALL participant IDs from CSV file (including those not in current teams)
+        List<String> allParticipantIdsInCSV = getAllParticipantIdsFromCSV();
+        List<String> participantsWithTeams = new ArrayList<>(portal.getParticipantTeams().keySet());
 
-        try {
-            // Initialize participant portal with current data
-            ParticipantPortal portal = new ParticipantPortal();
-            portal.initializeData(currentTeams, currentParticipants);
+        while(true){
+            System.out.print("\nEnter Participant ID (e.g., P001) or 'exit' to quit: ");
+            String searchInput = scanner.nextLine().trim();
 
-            portal.debugTeamAssignments();
-
-            List<Participant> foundParticipants = portal.findParticipant(searchInput);
-
-            if (foundParticipants.isEmpty()) {
-                System.out.println("No participant found with: " + searchInput);
-                showParticipantSuggestions(portal);
+            if (searchInput.equalsIgnoreCase("exit")) {
+                System.out.println("Returning to main menu...");
                 return;
             }
 
-            if (foundParticipants.size() == 1) {
-                // Single match found
-                Participant participant = foundParticipants.get(0);
-                System.out.println("\nFound participant: " + participant.toDisplayString());
+            // Validate ID format
+            if (!isValidParticipantIdFormat(searchInput)) {
+                System.out.println("Invalid ID format! Must start with 'P' followed by numbers (e.g., P001, P102)");
+                showAvailableParticipants(participantsWithTeams, allParticipantIdsInCSV);
+                continue;
+            }
+            String formattedId = searchInput.toUpperCase();
 
-                String teamDetails = portal.getTeamAssignmentDetails(participant.getId());
-                System.out.println("\n" + teamDetails);
+            // SCENARIO 1: Participant NOT in CSV (haven't completed survey)
+            if(!allParticipantIdsInCSV.contains(formattedId)){
+                System.out.println("\nParticipant ID '" + formattedId + "' not found in system.");
+                System.out.println("This participant has not completed the survey yet.");
+                System.out.println("  2. Fill out the personality survey and preferences");
+                System.out.println("  3. Ask organizer to run team formation");
+                System.out.println("  4. Come back here to view your team assignment");
 
-            } else {
-                // Multiple matches found
-                System.out.println("\nMultiple participants found:");
-                for (int i = 0; i < foundParticipants.size(); i++) {
-                    Participant p = foundParticipants.get(i);
-                    System.out.printf("%d. %s - %s%n", i + 1, p.getId(), p.toDisplayString());
-                }
-
-                System.out.print("\nSelect participant (1-" + foundParticipants.size() + "): ");
-                try {
-                    int choice = Integer.parseInt(scanner.nextLine().trim());
-                    if (choice >= 1 && choice <= foundParticipants.size()) {
-                        Participant selected = foundParticipants.get(choice - 1);
-                        String teamDetails = portal.getTeamAssignmentDetails(selected.getId());
-                        System.out.println("\n" + teamDetails);
-                    } else {
-                        System.out.println("Invalid selection.");
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("Please enter a valid number.");
+                System.out.print("\nTry another Participant ID? (yes/no): ");
+                String tryAgain = scanner.nextLine().trim();
+                if (tryAgain.equalsIgnoreCase("yes") || tryAgain.equalsIgnoreCase("y")){
+                    continue;
+                }else{
+                    return;
                 }
             }
 
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-            e.printStackTrace();
+            // SCENARIO 2: Participant in CSV but NO team assignment
+            if (!participantsWithTeams.contains(formattedId)){
+                System.out.println("\n Participant '" + formattedId + "' found in system (survey completed).");
+                System.out.println(" But no team assignment found for this participant.");
+
+                System.out.println("\n Possible reasons:");
+                System.out.println("  1. Team formation didn't include all participants");
+                System.out.println("  2. Team size constraints excluded some participants");
+                System.out.println("  3. Participant was added after last team formation");
+
+                System.out.println("\n Suggestions:");
+                System.out.println("  - Ask organizer to run team formation again");
+                System.out.println("  - Check if all participant data is correct");
+
+                System.out.print("\nTry another Participant ID? (yes/no): ");
+                String tryAgain = scanner.nextLine().trim();
+                if (tryAgain.equalsIgnoreCase("yes") || tryAgain.equalsIgnoreCase("y")){
+                    continue;
+                }else{
+                    return;
+                }
+            }
+
+            // SCENARIO 3: Participant has team assignment - SUCCESS!
+            List<Participant> foundParticipants = portal.findParticipant(formattedId);
+            if(foundParticipants.isEmpty()){
+                Participant participant = foundParticipants.get(0);
+                System.out.println("\n Found participant: " + participant.toDisplayString());
+
+                String teamDetails = portal.getTeamAssignmentDetails(participant.getId());
+                System.out.println("\n" + teamDetails);
+                break;
+            }
         }
     }
 
-    private static void showParticipantSuggestions(ParticipantPortal portal) {
-        System.out.println("\nSuggestions - Available Participants with Teams:");
+    private static List<String> getAllParticipantIdsFromCSV() {
+        List<String> participantIds = new ArrayList<>();
+        try {
+            CSVHandler csvHandler = new CSVHandler();
+            List<Participant> allParticipants = csvHandler.loadParticipants("participants_sample.csv");
+            participantIds = allParticipants.stream()
+                    .map(Participant::getId)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            System.out.println("Warning: Could not load participant IDs from CSV: " + e.getMessage());
+        }
+        return participantIds;
+    }
 
-        // Get first 10 participants who have team assignments
-        portal.getParticipantTeams().keySet().stream()
-                .sorted()
-                .limit(10)
-                .forEach(id -> {
-                    Participant p = (Participant) portal.getAllParticipants().get(id);
-                    if (p != null) {
-                        Team team = portal.getParticipantTeams().get(id);
-                        System.out.printf("  - %s: %s → %s%n", id, p.getName(), team.getName());
-                    }
-                });
+    private static void showAvailableParticipants(List<String> participantsWithTeams, List<String> allParticipantIdsInCSV) {
+        System.out.println("\n Available Participants:");
 
-        System.out.println("\nTry one of these IDs, or ask the organizer for your correct Participant ID.");
+        System.out.println(" Participants with teams (" + participantsWithTeams.size() + "):");
+        if (participantsWithTeams.isEmpty()) {
+            System.out.println("   None - run team formation first");
+        } else {
+            int maxToShow = Math.min(5, participantsWithTeams.size());
+            for (int i = 0; i < maxToShow; i++) {
+                System.out.println("   - " + participantsWithTeams.get(i));
+            }
+            if (participantsWithTeams.size() > 5) {
+                System.out.println("   ... and " + (participantsWithTeams.size() - 5) + " more");
+            }
+        }
+
+        System.out.println("\nTotal participants who completed survey: " + allParticipantIdsInCSV.size());
+        System.out.println(" New participants should complete the survey first");
+    }
+
+
+    private static boolean isValidParticipantIdFormat(String id) {
+        return id != null && id.matches("P\\d+");
     }
 
     private static void runAllDemonstration() {
