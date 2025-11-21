@@ -379,7 +379,9 @@ public class Main {
         portal.initializeData(currentTeams, currentParticipants);
 
         //Get ALL participant IDs from CSV file (including those not in current teams)
-        List<String> allParticipantIdsInCSV = getAllParticipantIdsFromCSV();
+        List<String> allParticipantIdsInSystem = currentParticipants.stream()
+                .map(Participant::getId)
+                .collect(Collectors.toList());
         List<String> participantsWithTeams = new ArrayList<>(portal.getParticipantTeams().keySet());
 
         while(true){
@@ -394,13 +396,13 @@ public class Main {
             // Validate ID format
             if (!isValidParticipantIdFormat(searchInput)) {
                 System.out.println("Invalid ID format! Must start with 'P' followed by numbers (e.g., P001, P102)");
-                showAvailableParticipants(participantsWithTeams, allParticipantIdsInCSV);
+                showAvailableParticipants(participantsWithTeams, allParticipantIdsInSystem);
                 continue;
             }
             String formattedId = searchInput.toUpperCase();
 
             // SCENARIO 1: Participant NOT in CSV (haven't completed survey)
-            if(!allParticipantIdsInCSV.contains(formattedId)){
+            if(!allParticipantIdsInSystem.contains(formattedId)){
                 System.out.println("\nParticipant ID '" + formattedId + "' not found in system.");
                 System.out.println("This participant has not completed the survey yet.");
                 System.out.println("  2. Fill out the personality survey and preferences");
@@ -441,7 +443,7 @@ public class Main {
 
             // SCENARIO 3: Participant has team assignment - SUCCESS!
             List<Participant> foundParticipants = portal.findParticipant(formattedId);
-            if(foundParticipants.isEmpty()){
+            if(!foundParticipants.isEmpty()){
                 Participant participant = foundParticipants.get(0);
                 System.out.println("\n Found participant: " + participant.toDisplayString());
 
@@ -449,21 +451,11 @@ public class Main {
                 System.out.println("\n" + teamDetails);
                 break;
             }
+            else {
+                System.out.println("Unexpected error: Participant found but couldn't retrieve details.");
+                continue;
+            }
         }
-    }
-
-    private static List<String> getAllParticipantIdsFromCSV() {
-        List<String> participantIds = new ArrayList<>();
-        try {
-            CSVHandler csvHandler = new CSVHandler();
-            List<Participant> allParticipants = csvHandler.loadParticipants("participants_sample.csv");
-            participantIds = allParticipants.stream()
-                    .map(Participant::getId)
-                    .collect(Collectors.toList());
-        } catch (Exception e) {
-            System.out.println("Warning: Could not load participant IDs from CSV: " + e.getMessage());
-        }
-        return participantIds;
     }
 
     private static void showAvailableParticipants(List<String> participantsWithTeams, List<String> allParticipantIdsInCSV) {
