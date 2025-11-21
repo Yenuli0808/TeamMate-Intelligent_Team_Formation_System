@@ -200,15 +200,26 @@ public class Main {
             //Participant name validation
             String name;
             while (true) {
-                System.out.print("Enter Name: ");
+                System.out.print("Enter Name(format: Participant_XXX where XXX is numbers): ");
                 name = scanner.nextLine().trim();
 
                 if (name.isEmpty()) {
-                    System.out.println("Name cannot be empty. Please try again.");
+                    System.out.println("\nName cannot be empty. Please try again.");
                     continue;
                 }
-                if (!name.matches("[a-zA-Z\\s]+")) {
-                    System.out.println("Name can only contain letters and spaces. Please try again.");
+                if (!name.matches("Participant_\\d+")) {
+                    System.out.println("\nInvalid name format! Must be: Participant_XXX (e.g., Participant_101)");
+                    System.out.println("\nYour ID is: " + id + " so name should be: Participant_" + id.substring(1));
+                    continue;
+                }
+                String nameNumber = name.replace("Participant_", "");
+                String idNumber = id.replace("P", "");
+
+                if (!nameNumber.equals(idNumber)) {
+                    System.out.println("----------------------------------------------------------------------");
+                    System.out.println("Name number doesn't match Participant ID!");
+                    System.out.println("Your ID is: " + id + " so name should be: Participant_" + idNumber);
+                    System.out.println("-----------------------------------------------------------------------");
                     continue;
                 }
                 break;
@@ -217,15 +228,28 @@ public class Main {
             //Email validation
             String email;
             while (true) {
-                System.out.print("Enter Email: ");
+                System.out.print("Enter Email(format: userXXX@university.edu): ");
                 email = scanner.nextLine().trim();
 
                 if (email.isEmpty()) {
-                    System.out.println("Email cannot be empty. Please try again.");
+                    System.out.println("\nEmail cannot be empty. Please try again.");
                     continue;
                 }
-                if (!email.contains("@")) {
-                    System.out.println("Valid email required (must contain '@'). Please try again.");
+                // Validate email format: user + numbers + @university.edu
+                if (!email.matches("user\\d+@university\\.edu")) {
+                    System.out.println("\nInvalid email format! Must be: userXXX@university.edu (e.g., user101@university.edu)");
+                    System.out.println("\nYour ID is: " + id + " so email should be: user" + id.substring(1) + "@university.edu");
+                    continue;
+                }
+
+                String emailNumber = email.replace("user", "").replace("@university.edu", "");
+                String idNumber = id.replace("P", "");
+
+                if (!emailNumber.equals(idNumber)) {
+                    System.out.println("-----------------------------------------------------------------------------------");
+                    System.out.println("Email number doesn't match Participant ID!");
+                    System.out.println("Your ID is: " + id + " so email should be: user" + idNumber + "@university.edu");
+                    System.out.println("------------------------------------------------------------------------------------");
                     continue;
                 }
                 break;

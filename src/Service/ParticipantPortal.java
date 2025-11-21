@@ -42,17 +42,6 @@ public class ParticipantPortal {
         System.out.println("Created " + totalMappings + " participant-team mappings");
     }
 
-//    public void debugTeamAssignments() {
-//        System.out.println("\n=== DEBUG: ALL TEAM ASSIGNMENTS ===");
-//        for (Map.Entry<String, Team> entry : participantTeams.entrySet()) {
-//            Participant p = allParticipants.get(entry.getKey());
-//            String participantName = (p != null) ? p.getName() : "Unknown";
-//            System.out.printf("  %s (%s) -> %s%n",
-//                    entry.getKey(), participantName, entry.getValue().getName());
-//        }
-//        System.out.println("Total assignments: " + participantTeams.size());
-//    }
-
     public Team viewTeamAssignment(String participantId) {
         if(participantId == null || participantId.trim().isEmpty()){
             throw new IllegalArgumentException("Participant ID cannot be empty");
