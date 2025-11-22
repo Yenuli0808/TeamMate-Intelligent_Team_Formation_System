@@ -243,7 +243,6 @@ public class CSVHandler {
                 break;
             }
         }
-
         if (!isValid) {
             throw new IllegalArgumentException(Constant.INVALID_ROLE_MESSAGE);
         }

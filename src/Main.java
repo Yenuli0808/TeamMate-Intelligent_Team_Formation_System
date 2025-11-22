@@ -313,12 +313,24 @@ public class Main {
             String game;
             while (true) {
                 System.out.print("===========================================================================");
-                System.out.print("\nGame selection options: Chess, FIFA, BasketBall, CS:GO, DOTA 2,Volorant");
+                System.out.print("\nGame selection options: " + String.join(", ", Constant.VALID_GAMES));
                 System.out.print("\nEnter Preferred Game: ");
                 game = scanner.nextLine().trim();
 
                 if (game.isEmpty()) {
                     System.out.println("Preferred game cannot be empty. Please try again.");
+                    continue;
+                }
+                boolean validGame = false;
+                for(String validGameName : Constant.VALID_GAMES){
+                    if (validGameName.equalsIgnoreCase(game)){
+                        game = validGameName; // Use correct capitalization
+                        validGame = true;
+                        break;
+                    }
+                }
+                if (!validGame) {
+                    System.out.println(Constant.INVALID_GAME_MESSAGE);
                     continue;
                 }
                 break;
@@ -329,16 +341,26 @@ public class Main {
             while (true) {
                 System.out.print("=======================================================================================================");
                 System.out.print("\nRole selection Options: \n ");
-                System.out.println("1.Strategist: Focuses on tactics and planning. Keeps the bigger picture in mind during gameplay\n" +
-                        "2.Attacker:Frontline player. Good reflexes, offensive tactics, quick execution.\n" +
-                        "3.Defender: Protects and supports team stability. Good under pressure and team-focused\n" +
-                        "4.Supporter: Jack-of-all-trades. Adapts roles, ensures smooth coordination\n" +
-                        "5.Coordinator: Communication lead. Keeps the team informed and organized in real time\n");
+                for (int i = 0; i < Constant.VALID_ROLES.length; i++) {
+                    System.out.println((i+1) + ". " + Constant.VALID_ROLES[i]);
+                }
                 System.out.print("Enter Preferred Role: ");
                 role = scanner.nextLine().trim();
 
                 if (role.isEmpty()) {
                     System.out.println("Preferred role cannot be empty. Please try again.");
+                    continue;
+                }
+                boolean validRole = false;
+                for(String validRoleName : Constant.VALID_ROLES){
+                    if (validRoleName.equalsIgnoreCase(role)){
+                        role = validRoleName;
+                        validRole = true;
+                        break;
+                    }
+                }
+                if (!validRole) {
+                    System.out.println(Constant.INVALID_ROLE_MESSAGE);
                     continue;
                 }
                 break;
