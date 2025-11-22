@@ -76,11 +76,11 @@ public class TeamBuilder implements TeamFormationStrategy {
     // ===== CONCURRENT PROCESSING (REQUIREMENT) =====
     public CompletableFuture<List<Team>> formTeamsConcurrently() {
         return CompletableFuture.supplyAsync(() -> {
-            System.out.println("Processing team formation in background thread...");
+            System.out.println("\nProcessing team formation in background thread...");
             try {
                 // Simulate processing time for large datasets
                 Thread.sleep(500);
-                System.out.println("✓ Background processing completed");
+                System.out.println("✓ Background processing completed\n");
                 return formAdvancedTeams();
             } catch (InterruptedException e) {
                 throw new RuntimeException("Team formation interrupted", e);
@@ -90,7 +90,7 @@ public class TeamBuilder implements TeamFormationStrategy {
 
     public CompletableFuture<Void> processSurveyDataConcurrently(List<Participant> surveyData) {
         return CompletableFuture.runAsync(() -> {
-            System.out.println("Processing survey data for " + surveyData.size() + " participants...");
+            System.out.println("\nProcessing survey data for " + surveyData.size() + " participants...");
             try {
                 // Simulate survey data processing
                 Thread.sleep(300);
