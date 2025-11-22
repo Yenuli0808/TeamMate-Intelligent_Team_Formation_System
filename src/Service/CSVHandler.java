@@ -1,5 +1,6 @@
 package Service;
 
+import Constant.Constant;
 import Gaming_Club_Model.Participant;
 import Gaming_Club_Model.PersonalityType;
 import Gaming_Club_Model.Team;
@@ -211,6 +212,42 @@ public class CSVHandler {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Invalid personality score (must be integer 0-100): " + scoreStr);
         }
+    }
+
+    private String validateGame(String game, int lineNumber) {
+        String validatedGame = validateField(game, "Preferred Game", lineNumber);
+
+        // Check if game is in valid list
+        boolean isValid = false;
+        for (String validGame : Constant.VALID_GAMES) {
+            if (validGame.equalsIgnoreCase(validatedGame)) {
+                isValid = true;
+                break;
+            }
+        }
+
+        if (!isValid) {
+            throw new IllegalArgumentException(Constant.INVALID_GAME_MESSAGE);
+        }
+        return validatedGame;
+    }
+
+    private String validateRole(String role, int lineNumber) {
+        String validatedRole = validateField(role, "Preferred Role", lineNumber);
+
+        // Check if role is in valid list
+        boolean isValid = false;
+        for (String validRole : Constant.VALID_ROLES) {
+            if (validRole.equalsIgnoreCase(validatedRole)) {
+                isValid = true;
+                break;
+            }
+        }
+
+        if (!isValid) {
+            throw new IllegalArgumentException(Constant.INVALID_ROLE_MESSAGE);
+        }
+        return validatedRole;
     }
 
     private boolean isValidHeader(String header) {
