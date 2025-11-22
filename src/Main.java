@@ -62,28 +62,30 @@ public class Main {
 
         while (true) {
             System.out.println("\nOrganizer Menu:");
+            System.out.println("--------------------------------------------");
             System.out.println("1. Upload CSV File");
             System.out.println("2. Set Team Formation Parameters");
             System.out.println("3. Run Team Formation Algorithm");
-            System.out.println("4. View Formation Results");
-            System.out.println("5. Save Teams to CSV");
-            System.out.println("6. Generate Advanced Report");
-            System.out.println("7. Refresh Participant Data");
-            System.out.println("8. Show Participant Statistics");
-            System.out.println("9. Return to Main Menu");
-            System.out.print("Select option (1-9): ");
+            System.out.println("4. Run Team Formation Concurrently");
+            System.out.println("5. View Formation Results");
+            System.out.println("6. Save Teams to CSV");
+            System.out.println("7. Generate Advanced Report");
+            System.out.println("8. Refresh Participant Data");
+            System.out.println("9. Show Participant Statistics");
+            System.out.println("10. Return to Main Menu");
+            System.out.print("\nSelect option (1-10): ");
 
             String choice = scanner.nextLine().trim();
 
             try{
                 switch (choice) {
                     case "1":
-                        System.out.println("Enter CSV file path (e.g., participants_sample.csv): ");
+                        System.out.println("\nEnter CSV file path (e.g., participants_sample.csv): ");
                         String csvFile = scanner.nextLine().trim();
                         currentParticipants = organizer.uploadCSV(csvFile);
                         break;
                     case "2":
-                        System.out.print("Enter Team Size (min: " + Constant.MIN_TEAM_SIZE + ", max: " + Constant.MAX_TEAM_SIZE + "): ");
+                        System.out.print("\nEnter Team Size (min: " + Constant.MIN_TEAM_SIZE + ", max: " + Constant.MAX_TEAM_SIZE + "): ");
                         int teamSize;
                         while (true){
                             try{
@@ -678,8 +680,8 @@ public class Main {
             List<Team> teams = builder.formBalancedTeams();
 
             System.out.println("Saving teams to output CSV...");
-            csvHandler.saveTeamsToCSV(teams, "formed_teams.csv");
-            System.out.println("SUCCESS: Saved " + teams.size() + " teams to 'formed_teams.csv'");
+            csvHandler.saveTeamsToCSV(teams, "formed_teams-.csv");
+            System.out.println("SUCCESS: Saved " + teams.size() + " teams to 'formed_teams-.csv'");
 
             System.out.println("\nSample of loaded data (first 3 participants):");
             for (int i = 0; i < Math.min(3, participants.size()); i++) {
@@ -768,7 +770,7 @@ public class Main {
             organizer.runTeamFormation();
             organizer.viewFormationResults();
             organizer.generateAdvancedReport();
-            organizer.saveTeams("organized_teams.csv");
+            organizer.saveTeams("organized_teams-.csv");
 
             System.out.println("\n ORGANIZER WORKFLOW COMPLETED!");
         } catch (Exception e) {

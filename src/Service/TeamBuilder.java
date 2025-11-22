@@ -72,7 +72,7 @@ public class TeamBuilder implements TeamFormationStrategy {
         distributeWithAdvancedConstraints(teams);
         return teams;
     }
-    
+
     // ===== CONCURRENT PROCESSING (REQUIREMENT) =====
     public CompletableFuture<List<Team>> formTeamsConcurrently() {
         return CompletableFuture.supplyAsync(() -> {
