@@ -108,23 +108,27 @@ public class Main {
                         currentTeams = organizer.runTeamFormation();
                         break;
                     case "4":
-                        organizer.viewFormationResults();
+                        organizer.runTeamFormationConcurrently();
+                        System.out.println("Team formation running in background...");
                         break;
                     case "5":
+                        organizer.viewFormationResults();
+                        break;
+                    case "6":
                         System.out.print("Enter output file name (e.g., my_teams.csv): ");
                         String outputFile = scanner.nextLine().trim();
                         organizer.saveTeams(outputFile);
                         break;
-                    case "6":
+                    case "7":
                         organizer.generateAdvancedReport();
                         break;
-                    case "7":
+                    case "8":
                         currentParticipants = organizer.refreshParticipantData();
                         break;
-                    case "8":
+                    case "9":
                         organizer.showParticipantStatistics();
                         break;
-                    case "9":
+                    case "10":
                         return;
                     default:
                         System.out.println("Invalid choice.");
@@ -402,7 +406,7 @@ public class Main {
                 csvHandler.appendParticipantToCSV(participant, PARTICIPANTS_CSV);
                 System.out.println("SURVEY COMPLETED SUCCESSFULLY!");
             }
-
+            
             //Update current participants list if it exists
             if (currentParticipants != null) {
                 currentParticipants.add(participant);

@@ -82,6 +82,19 @@ public class Organizer extends BaseEntity {
         return currentTeams;
     }
 
+    public void runTeamFormationConcurrently() {
+        if (teamBuilder == null) {
+            throw new IllegalStateException("Please set formation parameters first");
+        }
+
+        System.out.println("Starting team formation in background thread...");
+
+        teamBuilder.formTeamsConcurrently().thenAccept(teams -> {
+            this.currentTeams = teams;
+            System.out.println("✓ Background formation completed: " + teams.size() + " teams");
+        });
+    }
+
     /**
      * USE CASE: View Formation Results
      * Organizer reviews the formed teams
