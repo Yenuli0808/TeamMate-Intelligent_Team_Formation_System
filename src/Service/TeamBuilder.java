@@ -72,21 +72,7 @@ public class TeamBuilder implements TeamFormationStrategy {
         distributeWithAdvancedConstraints(teams);
         return teams;
     }
-
-    public List<Team> formRandomTeams() {
-        List<Team> teams = createEmptyTeams((int) Math.ceil((double) participants.size() / teamSize));
-        List<Participant> shuffled = new ArrayList<>(participants);
-        Collections.shuffle(shuffled);
-
-        int currentTeam = 0;
-        for (Participant participant : shuffled) {
-            Team team = teams.get(currentTeam);
-            team.addMember(participant);
-            currentTeam = (currentTeam + 1) % teams.size();
-        }
-        return teams;
-    }
-
+    
     // ===== CONCURRENT PROCESSING (REQUIREMENT) =====
     public CompletableFuture<List<Team>> formTeamsConcurrently() {
         return CompletableFuture.supplyAsync(() -> {
@@ -113,17 +99,6 @@ public class TeamBuilder implements TeamFormationStrategy {
             } catch (InterruptedException e) {
                 throw new RuntimeException("Survey processing interrupted", e);
             }
-        }, executor);
-    }
-    public CompletableFuture<List<Team>> processSurveysAndFormTeams(List<Survey> surveys) {
-        return CompletableFuture.supplyAsync(() -> {
-            // Process surveys concurrently
-            List<Participant> participants = surveys.parallelStream()
-                    .map(Survey::processSurvey)
-                    .collect(Collectors.toList());
-
-            System.out.println("Processed " + participants.size() + " surveys");
-            return formAdvancedTeams();
         }, executor);
     }
 

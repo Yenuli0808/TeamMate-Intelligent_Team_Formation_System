@@ -406,7 +406,7 @@ public class Main {
                 csvHandler.appendParticipantToCSV(participant, PARTICIPANTS_CSV);
                 System.out.println("SURVEY COMPLETED SUCCESSFULLY!");
             }
-            
+
             //Update current participants list if it exists
             if (currentParticipants != null) {
                 currentParticipants.add(participant);
@@ -418,6 +418,9 @@ public class Main {
             System.out.println("Personality Type: " + personalityType);
             System.out.println("Participant: " + participant.toDisplayString());
             System.out.println("Data saved to: " + PARTICIPANTS_CSV);
+
+            TeamBuilder teamBuilder = new TeamBuilder(List.of(participant),2);
+            teamBuilder.processSurveyDataConcurrently(List.of(participant));
 
             // Show what happens next
             System.out.println("\nNext Steps:");
