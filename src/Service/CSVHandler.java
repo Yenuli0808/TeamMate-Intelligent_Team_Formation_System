@@ -156,9 +156,9 @@ public class CSVHandler {
             String id = validateField(parts[0], "ID", lineNumber);
             String name = validateField(parts[1], "Name", lineNumber);
             String email = validateEmail(parts[2], lineNumber);
-            String preferredGame = validateField(parts[3], "Preferred Game", lineNumber);
+            String preferredGame = validateGame(parts[3], lineNumber);
             int skillLevel = validateSkillLevel(parts[4], lineNumber);
-            String preferredRole = validateField(parts[5], "Preferred Role", lineNumber);
+            String preferredRole = validateRole(parts[5],lineNumber);
             int personalityScore = validatePersonalityScore(parts[6], lineNumber);
 
             Participant participant = new Participant(id,name,email,"N/A",preferredGame,skillLevel,preferredRole,personalityScore);
