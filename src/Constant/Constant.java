@@ -17,9 +17,6 @@ public final class Constant {
     public static final int MAX_SAME_GAME_PER_TEAM = 2;
     public static final int MIN_DIFFERENT_ROLES = 3;
 
-    public static final String DEFAULT_INPUT_CSV = "data/participants_sample.csv";
-    public static final String DEFAULT_OUTPUT_CSV = "data/formed_teams.csv";
-
     public static final String INVALID_SKILL_LEVEL = "Skill level must be between " + MIN_SKILL_LEVEL + " and " + MAX_SKILL_LEVEL;
     public static final String INVALID_PERSONALITY_SCORE = "Personality score must be between " + MIN_PERSONALITY_SCORE + " and " + MAX_PERSONALITY_SCORE;
 
