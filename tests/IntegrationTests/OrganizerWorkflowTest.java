@@ -40,5 +40,5 @@ public class OrganizerWorkflowTest {
         organizer.saveTeams(outputFile.getAbsolutePath());
         assertTrue(outputFile.exists());
     }
-    
+
 }
