@@ -22,4 +22,10 @@ public final class Constant {
 
     public static final String INVALID_SKILL_LEVEL = "Skill level must be between " + MIN_SKILL_LEVEL + " and " + MAX_SKILL_LEVEL;
     public static final String INVALID_PERSONALITY_SCORE = "Personality score must be between " + MIN_PERSONALITY_SCORE + " and " + MAX_PERSONALITY_SCORE;
+
+    public static final String[] VALID_GAMES = {"Chess", "FIFA", "Basketball", "CS:GO", "DOTA 2", "Valorant"};
+    public static final String[] VALID_ROLES = {"Strategist", "Attacker", "Defender", "Supporter", "Coordinator"};
+
+    public static final String INVALID_GAME_MESSAGE = "Invalid game. Must be one of: " + String.join(", ", VALID_GAMES);
+    public static final String INVALID_ROLE_MESSAGE = "Invalid role. Must be one of: " + String.join(", ", VALID_ROLES);
 }
