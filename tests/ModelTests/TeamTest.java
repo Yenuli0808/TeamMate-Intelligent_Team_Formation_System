@@ -49,4 +49,5 @@ public class TeamTest {
 
         assertEquals(7.0, team.getAverageSkill(), 0.01);
     }
+
 }
