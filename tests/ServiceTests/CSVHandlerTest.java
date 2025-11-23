@@ -7,13 +7,13 @@ import Service.TeamBuilder;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class CSVHandlerTest {
 
@@ -54,5 +54,13 @@ public class CSVHandlerTest {
 
         assertTrue(tempFile.exists());
         assertTrue(tempFile.length() > 0);
+    }
+
+    @Test
+    public void testCSVHandler_InvalidFile() {
+        CSVHandler handler = new CSVHandler();
+        assertThrows(FileNotFoundException.class, () -> {
+            handler.loadParticipants("nonexistent_file.csv");
+        });
     }
 }
