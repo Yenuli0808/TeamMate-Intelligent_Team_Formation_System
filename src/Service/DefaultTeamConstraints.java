@@ -35,7 +35,14 @@ public class DefaultTeamConstraints implements TeamFormationConstraint {
 
         // If adding this role would help reach minimum diversity
         currentRoles.add(newMember.getPreferredRole());
-        return currentRoles.size() >= Math.min(minDifferentRoles, team.getMaxSize());
+        int requiredRoles = Math.min(minDifferentRoles,team.getMaxSize());
+        //return currentRoles.size() >= Math.min(minDifferentRoles, team.getMaxSize());
+        if(team.getCurrentSize()==0){
+            return true;    //Empty team - any player should be allowed
+        }else if(team.getCurrentSize()<3){
+            return currentRoles.size() >= Math.min(2, requiredRoles);       // Small teams - require at least 2 different roles
+        }
+        return currentRoles.size()>=requiredRoles;
     }
 
     private boolean satisfiesPersonalityConstraint(Team team, Participant newMember) {
