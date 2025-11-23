@@ -224,7 +224,7 @@ public class Main {
                 }
                 if (!name.matches("Participant_\\d+")) {
                     System.out.println("\nInvalid name format! Must be: Participant_XXX (e.g., Participant_101)");
-                    System.out.println("\nYour ID is: " + id + " so name should be: Participant_" + id.substring(1));
+                    System.out.println("Your ID is: " + id + " so name should be: Participant_" + id.substring(1)+"\n");
                     continue;
                 }
                 String nameNumber = name.replace("Participant_", "");
