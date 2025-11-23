@@ -1,5 +1,6 @@
 package Service;
 
+import Gaming_Club_Model.PersonalityType;
 import Gaming_Club_Model.Team;
 import Gaming_Club_Model.Participant;
 import java.util.Set;
@@ -21,14 +22,14 @@ public class DefaultTeamConstraints implements TeamFormationConstraint {
                 satisfiesPersonalityConstraint(team, newMember);
     }
 
-    private boolean satisfiesGameConstraint(Team team, Participant newMember) {
+    public boolean satisfiesGameConstraint(Team team, Participant newMember) {
         long sameGameCount = team.getMembers().stream()
                 .filter(p -> p.getPreferredGame().equals(newMember.getPreferredGame()))
                 .count();
         return sameGameCount < maxSameGame;
     }
 
-    private boolean satisfiesRoleConstraint(Team team, Participant newMember) {
+    public boolean satisfiesRoleConstraint(Team team, Participant newMember) {
         Set<String> currentRoles = team.getMembers().stream()
                 .map(Participant::getPreferredRole)
                 .collect(Collectors.toSet());
@@ -36,7 +37,7 @@ public class DefaultTeamConstraints implements TeamFormationConstraint {
         // If adding this role would help reach minimum diversity
         currentRoles.add(newMember.getPreferredRole());
         int requiredRoles = Math.min(minDifferentRoles,team.getMaxSize());
-        //return currentRoles.size() >= Math.min(minDifferentRoles, team.getMaxSize());
+
         if(team.getCurrentSize()==0){
             return true;    //Empty team - any player should be allowed
         }else if(team.getCurrentSize()<3){
@@ -45,13 +46,13 @@ public class DefaultTeamConstraints implements TeamFormationConstraint {
         return currentRoles.size()>=requiredRoles;
     }
 
-    private boolean satisfiesPersonalityConstraint(Team team, Participant newMember) {
-        // Basic constraint: max 1 leader per team
-        if (newMember.getPersonalityType().toString().equals("LEADER")) {
+    public boolean satisfiesPersonalityConstraint(Team team, Participant newMember) {
+        if (newMember.getPersonalityType() == PersonalityType.LEADER) {
             long leaderCount = team.getMembers().stream()
-                    .filter(p -> p.getPersonalityType().toString().equals("LEADER"))
+                    .filter(p -> p.getPersonalityType() == PersonalityType.LEADER)
                     .count();
-            return leaderCount == 0;
+            System.out.println("Existing leaders: " + leaderCount + ", Adding leader: " + (leaderCount == 0));
+            return leaderCount == 0;  // Can only add leader if no existing leaders
         }
         return true;
     }
