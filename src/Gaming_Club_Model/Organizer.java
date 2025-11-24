@@ -90,7 +90,9 @@ public class Organizer extends BaseEntity {
         System.out.println("Starting team formation in background thread...");
 
         teamBuilder.formTeamsConcurrently().thenAccept(teams -> {
-            this.currentTeams = teams;
+            synchronized (this) {
+                this.currentTeams = teams;
+            }
             System.out.println("✓ Background formation completed: " + teams.size() + " teams");
         });
     }
