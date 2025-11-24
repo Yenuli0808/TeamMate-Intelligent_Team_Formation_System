@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class TeamBuilder implements TeamFormationStrategy {
     private int teamSize;
-    private List<Participant> participants;
+    private final List<Participant> participants;
     private TeamFormationConstraint constraints;
     private ExecutorService executor;
 
@@ -32,7 +32,7 @@ public class TeamBuilder implements TeamFormationStrategy {
             throw new IllegalArgumentException("Team size cannot be greater than number of participants");
         }
 
-        this.participants = new ArrayList<>(participants);
+        this.participants = Collections.synchronizedList(new ArrayList<>(participants));
         this.teamSize = teamSize;
         this.constraints = new DefaultTeamConstraints();
         this.executor = Executors.newFixedThreadPool(2); // For concurrency
@@ -97,6 +97,7 @@ public class TeamBuilder implements TeamFormationStrategy {
                 this.participants.addAll(surveyData);
                 System.out.println("✓ Survey data processing completed");
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 throw new RuntimeException("Survey processing interrupted", e);
             }
         }, executor);

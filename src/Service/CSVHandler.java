@@ -53,9 +53,6 @@ public class CSVHandler {
         }
     }
 
-    /**
-     * Core file loading logic (same as before)
-     */
     private List<Participant> loadParticipantsFromFile(String filename) throws IOException {
         File file = new File(filename);
 
