@@ -21,7 +21,6 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("=====TeamMate: Intelligent Team Formation System=====");
         System.out.println("===================================================");
-
         showMainMenu();
     }
 
@@ -567,6 +566,9 @@ public class Main {
         demonstrateConcurrency();
         demonstrateOrganizerWorkflow();
         demonstrateCompleteCSVWorkflow();
+        testAlgorithmComparison();
+        checkParticipantDistribution();
+        testFixedAlgorithm();
 
         System.out.println("\n All demonstrations completed successfully!");
     }
@@ -807,7 +809,154 @@ public class Main {
         } catch (Exception e) {
             System.out.println("CSV workflow failed: " + e.getMessage());
         }
-
     }
 
+    // Testing weather algorithm works properly for skill balance and role diversity
+
+    private static void testAlgorithmComparison() {
+        System.out.println("=== 🎯 ALGORITHM COMPARISON TEST ===");
+
+        try {
+            // Load your participants
+            CSVHandler csvHandler = new CSVHandler();
+            List<Participant> participants = csvHandler.loadParticipants("participants_sample.csv");
+
+            TeamBuilder teamBuilder = new TeamBuilder(participants, 5);
+
+            // Test BASIC algorithm
+            List<Team> basicTeams = teamBuilder.formBalancedTeams();
+            printSkillStats("BASIC ALGORITHM", basicTeams);
+
+            // Test ADVANCED algorithm
+            List<Team> advancedTeams = teamBuilder.formAdvancedTeams();
+            printSkillStats("ADVANCED ALGORITHM", advancedTeams);
+
+            // Determine which is better
+            double basicDiff = calculateSkillDifference(basicTeams);
+            double advancedDiff = calculateSkillDifference(advancedTeams);
+
+            System.out.println("\n=== 🏆 WINNER ANALYSIS ===");
+            if (basicDiff < advancedDiff) {
+                System.out.println("✅ BASIC ALGORITHM has better skill balance!");
+                System.out.println("Use teamBuilder.formBalancedTeams() for better results");
+            } else {
+                System.out.println("✅ ADVANCED ALGORITHM has better skill balance!");
+                System.out.println("But it needs fixing - current results are poor");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Test failed: " + e.getMessage());
+        }
+    }
+
+    private static void printSkillStats(String label, List<Team> teams) {
+        double min = teams.stream().mapToDouble(Team::getAverageSkill).min().orElse(0);
+        double max = teams.stream().mapToDouble(Team::getAverageSkill).max().orElse(0);
+        double diff = max - min;
+
+        System.out.printf("\n%s:%n", label);
+        System.out.printf("  Min Average: %.1f%n", min);
+        System.out.printf("  Max Average: %.1f%n", max);
+        System.out.printf("  Difference:  %.1f points%n", diff);
+
+        // Show the problem teams
+        if (diff > 2.0) {
+            System.out.println("  ❌ UNACCEPTABLE BALANCE");
+        } else if (diff > 1.5) {
+            System.out.println("  ⚠️  FAIR BALANCE (needs improvement)");
+        } else {
+            System.out.println("  ✅ EXCELLENT BALANCE!");
+        }
+    }
+
+    private static double calculateSkillDifference(List<Team> teams) {
+        double min = teams.stream().mapToDouble(Team::getAverageSkill).min().orElse(0);
+        double max = teams.stream().mapToDouble(Team::getAverageSkill).max().orElse(0);
+        return max - min;
+    }
+
+    private static void checkParticipantDistribution() {
+        try {
+            CSVHandler csvHandler = new CSVHandler();
+            List<Participant> participants = csvHandler.loadParticipants("participants_sample.csv");
+
+            long leaders = participants.stream().filter(p -> p.getPersonalityType() == PersonalityType.LEADER).count();
+            long thinkers = participants.stream().filter(p -> p.getPersonalityType() == PersonalityType.THINKER).count();
+            long balanced = participants.stream().filter(p -> p.getPersonalityType() == PersonalityType.BALANCED).count();
+
+            System.out.println("\n=== PARTICIPANT DISTRIBUTION ===");
+            System.out.println("Leaders: " + leaders + "/" + participants.size());
+            System.out.println("Thinkers: " + thinkers + "/" + participants.size());
+            System.out.println("Balanced: " + balanced + "/" + participants.size());
+
+            // Check if we have enough for 20 teams
+            System.out.println("\nLeaders per team (ideal: 1): " + (double)leaders/20);
+            System.out.println("Thinkers per team (ideal: 1-2): " + (double)thinkers/20);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void testFixedAlgorithm() {
+        System.out.println("\n=== TESTING FIXED ADVANCED ALGORITHM ===");
+
+        try {
+            // Load participants
+            CSVHandler csvHandler = new CSVHandler();
+            List<Participant> participants = csvHandler.loadParticipants("participants_sample.csv");
+
+            // Create team builder
+            TeamBuilder teamBuilder = new TeamBuilder(participants, 5);
+
+            // Test the fixed algorithm
+            List<Team> teams = teamBuilder.formAdvancedTeams();
+
+            // Analyze results
+            analyzeTeamComposition(teams);
+
+        } catch (Exception e) {
+            System.out.println("Test failed: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private static void analyzeTeamComposition(List<Team> teams) {
+        System.out.println("\n=== DETAILED COMPOSITION ANALYSIS ===");
+
+        int goodPersonalityTeams = 0;
+        int goodRoleTeams = 0;
+
+        for (Team team : teams) {
+            int leaders = team.countPersonalityType(PersonalityType.LEADER);
+            int thinkers = team.countPersonalityType(PersonalityType.THINKER);
+            int balanced = team.countPersonalityType(PersonalityType.BALANCED);
+            int roles = team.getUniqueRoles().size();
+
+            // Check personality constraints
+            boolean goodPersonality = (leaders >= 1 && leaders <= 2) &&
+                    (thinkers >= 1 && thinkers <= 2) &&
+                    (balanced >= 1);
+
+            // Check role constraints
+            boolean goodRoles = roles >= 3;
+
+            if (goodPersonality) goodPersonalityTeams++;
+            if (goodRoles) goodRoleTeams++;
+
+            System.out.printf("%s: %dL %dT %dB | %d roles | Personality: %s | Roles: %s%n",
+                    team.getName(), leaders, thinkers, balanced,
+                    roles,
+                    goodPersonality ? "✅" : "❌",
+                    goodRoles ? "✅" : "❌"
+            );
+        }
+        System.out.printf("\n=== SUMMARY ===%n");
+        System.out.printf("Personality Mix: %d/%d teams ✅%n", goodPersonalityTeams, teams.size());
+        System.out.printf("Role Diversity: %d/%d teams ✅%n", goodRoleTeams, teams.size());
+
+        // Check skill balance
+        double minSkill = teams.stream().mapToDouble(Team::getAverageSkill).min().orElse(0);
+        double maxSkill = teams.stream().mapToDouble(Team::getAverageSkill).max().orElse(0);
+        System.out.printf("Skill Balance: %.1f - %.1f (%.1f diff)%n", minSkill, maxSkill, maxSkill-minSkill);
+    }
 }

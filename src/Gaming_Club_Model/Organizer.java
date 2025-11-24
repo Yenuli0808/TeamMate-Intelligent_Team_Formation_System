@@ -77,9 +77,31 @@ public class Organizer extends BaseEntity {
         System.out.println("\nORGANIZER ACTION: Running team formation algorithm...");
 
         this.currentTeams = teamBuilder.formAdvancedTeams();
+
+        // Check if we need to use advanced for better constraints
+        if (!meetsMinimumConstraints(currentTeams)) {
+            System.out.println("Basic algorithm has constraint issues, trying advanced...");
+            this.currentTeams = teamBuilder.formAdvancedTeams();
+        }
+
         teamBuilder.checkRoleDiversity(currentTeams);
         System.out.println("SUCCESS: Formed " + currentTeams.size() + " balanced teams");
         return currentTeams;
+    }
+
+    private boolean meetsMinimumConstraints(List<Team> teams) {
+        for (Team team : teams) {
+            // Check role diversity
+            if (team.getUniqueRoles().size() < 3) {
+                return false;
+            }
+            // Check basic personality mix
+            if (team.countPersonalityType(PersonalityType.LEADER) > 2 ||
+                    team.countPersonalityType(PersonalityType.THINKER) == 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void runTeamFormationConcurrently() {

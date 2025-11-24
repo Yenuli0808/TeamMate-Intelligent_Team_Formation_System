@@ -49,7 +49,7 @@ public class TeamBuilder implements TeamFormationStrategy {
         return "Advanced Balanced Team Formation";
     }
 
-    // ===== DIFFERENT FORMATION STRATEGIES =====
+    // DIFFERENT FORMATION STRATEGIES
     public List<Team> formBalancedTeams() {
         int teamCount = (int) Math.ceil((double) participants.size() / teamSize);
         List<Team> teams = createEmptyTeams(teamCount);
@@ -73,7 +73,7 @@ public class TeamBuilder implements TeamFormationStrategy {
         return teams;
     }
 
-    // ===== CONCURRENT PROCESSING (REQUIREMENT) =====
+    // CONCURRENT PROCESSING
     public CompletableFuture<List<Team>> formTeamsConcurrently() {
         return CompletableFuture.supplyAsync(() -> {
             System.out.println("\nProcessing team formation in background thread...");
@@ -166,26 +166,114 @@ public class TeamBuilder implements TeamFormationStrategy {
                 .orElse(null);
     }
 
-    private int calculateTeamScore(Team team, Participant newPlayer) {
-        int score = 0;
+   private int calculateTeamScore(Team team, Participant newPlayer) {
+       int score = 0;
 
-        // Game variety: prefer teams with different games
-        if (countSameGame(team, newPlayer) == 0) score += 30;
-        else if (countSameGame(team, newPlayer) == 1) score += 10;
+       // PERSONALITY BALANCE
+       int currentLeaders = team.countPersonalityType(PersonalityType.LEADER);
+       int currentThinkers = team.countPersonalityType(PersonalityType.THINKER);
+       int currentBalanced = team.countPersonalityType(PersonalityType.BALANCED);
 
-        // Role diversity: prefer teams needing this role
-        if (!hasSameRole(team, newPlayer)) score += 25;
+       // PERSONALITY SCORING
+       if (newPlayer.getPersonalityType() == PersonalityType.LEADER) {
+           if (currentLeaders == 0) {
+               score += 100;  //  Team needs a leader
+           } else if (currentLeaders == 1) {
+               score += 20;   //  Second leader okay if needed
+           } else {
+               score -= 80;   // PENALTY: Third+ leader
+           }
+       }
 
-        // Personality balance
-        score += calculatePersonalityScore(team, newPlayer);
+       if (newPlayer.getPersonalityType() == PersonalityType.THINKER) {
+           if (currentThinkers == 0) {
+               score += 80;   // Team needs at least one thinker
+           } else if (currentThinkers == 1) {
+               score += 50;   // Good: Second thinker is ideal
+           } else {
+               score += 10;   // Low: Third thinker is okay
+           }
+       }
 
-        // Skill balance: prefer teams with lower average skill
-        double currentAvg = team.getAverageSkill();
-        if (currentAvg < 5.0) score += 20;
-        else if (currentAvg < 7.0) score += 10;
+       if (newPlayer.getPersonalityType() == PersonalityType.BALANCED) {
+           if (currentBalanced < 2) {
+               score += 60;   //  Team needs balanced players
+           } else if (currentBalanced < 3) {
+               score += 30;   //  More balanced players good
+           } else {
+               score += 5;    //  Enough balanced players already
+           }
+       }
 
-        return score;
+       // ROLE DIVERSITY
+       int currentRoleCount = team.getUniqueRoles().size();
+       boolean addsNewRole = !team.getUniqueRoles().contains(newPlayer.getPreferredRole());
+
+       if (addsNewRole) {
+           if (currentRoleCount < 2) {
+               score += 90;   // Team desperately needs role diversity
+           } else if (currentRoleCount < 3) {
+               score += 70;   // Team needs to reach minimum 3 roles
+           } else {
+               score += 30;   // Additional role diversity is beneficial
+           }
+       } else {
+           if (currentRoleCount < 3) {
+               score -= 40;   // if team have few roles and it has same role
+           }
+       }
+
+       // GAME VARIETY
+       long sameGameCount = countSameGame(team, newPlayer);
+       if (sameGameCount == 0) {
+           score += 25;  // Different game
+       } else if (sameGameCount == 1) {
+           score += 10;  // Second player with same game
+       } else {
+           score -= 30;  // wrong: Third+ player with same game
+       }
+
+       // SKILL BALANCE
+       double currentAvg = team.getAverageSkill();
+       double globalAvg = calculateGlobalAverage();
+
+       // Calculate what average would be after adding this player
+       int teamSize = team.getCurrentSize();
+       double newPotentialAvg = (currentAvg * teamSize + newPlayer.getSkillLevel()) / (teamSize + 1);
+
+       // Prefer teams that are closer to global average after adding player
+       double distanceFromGlobal = Math.abs(newPotentialAvg - globalAvg);
+       if (distanceFromGlobal < 0.5) score += 40;
+       else if (distanceFromGlobal < 1.0) score += 20;
+       else if (distanceFromGlobal > 2.0) score -= 20;
+
+       // Rescue very low skill teams
+       if (currentAvg < 4.0 && newPlayer.getSkillLevel() > 5) {
+           score += 50;
+       }
+
+       // Prevent very high skill teams
+       if (currentAvg > 7.0 && newPlayer.getSkillLevel() > 7) {
+           score -= 40;
+       }
+
+       // TEAM SIZE CONSIDERATION
+       if (team.getCurrentSize() < 2) {
+           // For first 2 players, be more flexible with constraints
+           score += 15;
+       }
+
+       return score;
+   }
+
+    private double calculateGlobalAverage() {
+        if (participants.isEmpty()) return 0.0;
+        int totalSkill = participants.stream()
+                .mapToInt(Participant::getSkillLevel)
+                .sum();
+        return (double) totalSkill / participants.size();
     }
+
 
     public void checkRoleDiversity(List<Team> teams) {
         System.out.println("\n=== ROLE DIVERSITY CHECK ===");
@@ -214,7 +302,7 @@ public class TeamBuilder implements TeamFormationStrategy {
         return score;
     }
 
-    // ===== CORE DISTRIBUTION LOGIC =====
+    // CORE DISTRIBUTION LOGIC
     private void distributeParticipants(List<Team> teams, List<Participant> participants) {
         int teamCount = teams.size();
         int participantIndex = 0;
@@ -241,7 +329,7 @@ public class TeamBuilder implements TeamFormationStrategy {
         }
     }
 
-    // ===== UTILITY METHODS =====
+    //UTILITY METHODS
     private List<Team> createEmptyTeams(int teamCount) {
         List<Team> teams = new ArrayList<>();
         for (int i = 0; i < teamCount; i++) {
@@ -274,7 +362,7 @@ public class TeamBuilder implements TeamFormationStrategy {
                 .anyMatch(team -> team.getMembers().contains(player));
     }
 
-    // ===== REPORTING METHODS =====
+    // REPORTING METHODS
     public void printBalanceReport(List<Team> teams) {
         System.out.println("\n=== TEAM BALANCE REPORT ===");
 
