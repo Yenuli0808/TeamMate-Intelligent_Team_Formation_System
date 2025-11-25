@@ -92,4 +92,5 @@ public class TeamBuilderTest {
             assertTrue("Each team should have multiple roles", team.getUniqueRoles().size() >= 2);
         }
     }
+
 }
