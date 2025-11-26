@@ -54,7 +54,7 @@ public class Main {
         }
     }
 
-    private static void organizerPortal() {   //sequence 1.1
+    private static void organizerPortal() {   //sequence 1.1(upload CSV),sequence 1(team parameter settings)
         System.out.println("===== ORGANIZER PORTAL =====");
 
         Organizer organizer = new Organizer("ORG001","Tournament Manager");  //sequence 1.1.1
@@ -81,17 +81,17 @@ public class Main {
                     case "1":
                         System.out.println("\nEnter CSV file path (e.g., participants_sample.csv): ");
                         String csvFile = scanner.nextLine().trim();
-                        currentParticipants = organizer.uploadCSV(csvFile);   //sequence 1.2
+                        currentParticipants = organizer.uploadCSV(csvFile);   //sequence 1.2(upload csv)
                         break;
                     case "2":
-                        System.out.print("\nEnter Team Size (min: " + Constant.MIN_TEAM_SIZE + ", max: " + Constant.MAX_TEAM_SIZE + "): ");
+                        System.out.print("\nEnter Team Size (min: " + Constant.MIN_TEAM_SIZE + ", max: " + Constant.MAX_TEAM_SIZE + "): ");   //sequence 2(set team formation parameters)
                         int teamSize;
                         while (true){
                             try{
-                                String teamSIzeInput = scanner.nextLine().trim();
+                                String teamSIzeInput = scanner.nextLine().trim();  //sequence 2.1(set team formation parameters)
                                 teamSize = Integer.parseInt(teamSIzeInput);
 
-                                organizer.setFormationParameters(teamSize);
+                                organizer.setFormationParameters(teamSize);   // sequence 3(set team formation parameters)
                                 break;
                             }catch (NumberFormatException e){
                                 System.out.println("Please enter a valid number.");

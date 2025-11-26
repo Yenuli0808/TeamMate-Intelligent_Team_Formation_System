@@ -19,6 +19,7 @@ public class TeamBuilder implements TeamFormationStrategy {
     private ExecutorService executor;
 
     public TeamBuilder(List<Participant> participants, int teamSize) {
+        // Message 7.1-7.2: Internal validation( set team formation parameters)
         if(participants == null || participants.isEmpty()) {
             throw new IllegalArgumentException("Participants cannot be empty");
         }
