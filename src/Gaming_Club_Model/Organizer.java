@@ -32,8 +32,8 @@ public class Organizer extends BaseEntity {
     public List<Participant> uploadCSV(String filename) {
         try {
             System.out.println("\nORGANIZER ACTION: Uploading CSV file...");
-            this.currentParticipants = csvHandler.loadParticipants(filename);
-            System.out.println("SUCCESS: Uploaded " + currentParticipants.size() + " participants from " + filename);
+            this.currentParticipants = csvHandler.loadParticipants(filename);    //sequence 1.3
+            System.out.println("SUCCESS: Uploaded " + currentParticipants.size() + " participants from " + filename);   //sequence 1.6
             return currentParticipants;
         } catch (Exception e) {
             System.out.println("FAILED: CSV upload - " + e.getMessage());

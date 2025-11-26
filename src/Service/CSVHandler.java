@@ -22,13 +22,13 @@ public class CSVHandler {
 
     //Load participants from CSV file with automatic file location detection
     public List<Participant> loadParticipants(String filename) throws IOException {
-        return loadParticipants(FileSource.LOCAL_FILE, filename);
+        return loadParticipants(FileSource.LOCAL_FILE, filename);   //sequence 1.3.2
     }
 
     public List<Participant> loadParticipants(FileSource source, String filePath) throws IOException {
         logger.info("Loading participants from: " + filePath + " (Source: " + source + ")");
 
-        String actualPath = resolveFilePath(source, filePath);
+        String actualPath = resolveFilePath(source, filePath);   //sequence 1.3.1
         System.out.println("Loading from: " + actualPath);
 
         return loadParticipantsFromFile(actualPath);
@@ -57,7 +57,7 @@ public class CSVHandler {
         File file = new File(filename);
 
         //validating file existence
-        if (!file.exists()) {
+        if (!file.exists()) {    //sequence 1.3.2.1
             String errorMsg = "CSV file not found: " + filename +
                     "\nPlease ensure the file exists in one of these locations:" +
                     "\n- " + filename +
@@ -106,7 +106,7 @@ public class CSVHandler {
                     if(line.trim().isEmpty()){
                         continue;    // this will skip the empty lines
                     }
-                    participant = parseParticipantLine(line, lineNumber);
+                    participant = parseParticipantLine(line, lineNumber);   //sequence 1.3.2.3
                     if(participant !=null){
                         participants.add(participant);
                         successCount++;
@@ -150,6 +150,7 @@ public class CSVHandler {
                 parts[i] = parts[i].trim();
             }
 
+            //sequence 1.3.2.3.1 to 1.3.2.3.7
             String id = validateField(parts[0], "ID", lineNumber);
             String name = validateField(parts[1], "Name", lineNumber);
             String email = validateEmail(parts[2], lineNumber);

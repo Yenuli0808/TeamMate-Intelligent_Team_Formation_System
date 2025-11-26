@@ -24,7 +24,7 @@ public class Main {
         showMainMenu();
     }
 
-    private static void showMainMenu() {
+    private static void showMainMenu() {  //Sequence 1
         while (true) {
             System.out.println("\n==== MAIN MENU ===");
             System.out.println("1. Organizer Portal");
@@ -54,10 +54,10 @@ public class Main {
         }
     }
 
-    private static void organizerPortal() {
+    private static void organizerPortal() {   //sequence 1.1
         System.out.println("===== ORGANIZER PORTAL =====");
 
-        Organizer organizer = new Organizer("ORG001","Tournament Manager");
+        Organizer organizer = new Organizer("ORG001","Tournament Manager");  //sequence 1.1.1
 
         while (true) {
             System.out.println("\nOrganizer Menu:");
@@ -81,7 +81,7 @@ public class Main {
                     case "1":
                         System.out.println("\nEnter CSV file path (e.g., participants_sample.csv): ");
                         String csvFile = scanner.nextLine().trim();
-                        currentParticipants = organizer.uploadCSV(csvFile);
+                        currentParticipants = organizer.uploadCSV(csvFile);   //sequence 1.2
                         break;
                     case "2":
                         System.out.print("\nEnter Team Size (min: " + Constant.MIN_TEAM_SIZE + ", max: " + Constant.MAX_TEAM_SIZE + "): ");
