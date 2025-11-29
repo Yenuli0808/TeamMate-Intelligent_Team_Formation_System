@@ -71,13 +71,16 @@ public class Organizer extends BaseEntity {
      * Organizer initiates the team formation process
      */
     public List<Team> runTeamFormation() {
-        if (teamBuilder == null) {
+        if (teamBuilder == null) {     //sequence no 2.1(run team formation)
             throw new IllegalStateException("Please set formation parameters first");
+        }
+        if (currentParticipants == null || currentParticipants.isEmpty()) {   //sequence no 2.2(run team formation)
+            throw new IllegalStateException("No participant data available");
         }
 
         System.out.println("\nORGANIZER ACTION: Running team formation algorithm...");
 
-        this.currentTeams = teamBuilder.formAdvancedTeams();
+        this.currentTeams = teamBuilder.formAdvancedTeams();  // sequence no 5: run team formation
 
         // Check if we need to use advanced for better constraints
         if (!meetsMinimumConstraints(currentTeams)) {

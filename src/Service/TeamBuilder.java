@@ -61,7 +61,7 @@ public class TeamBuilder implements TeamFormationStrategy {
 
     public List<Team> formAdvancedTeams() {
         int teamCount = (int) Math.ceil((double) this.participants.size() / teamSize);
-        List<Team> teams = createEmptyTeams(teamCount);
+        List<Team> teams = createEmptyTeams(teamCount);  // sequence 5.1: run team formation
 
         System.out.println("Applying Advanced Constraints:");
         System.out.println("1. One leader per team maximum");
@@ -75,7 +75,7 @@ public class TeamBuilder implements TeamFormationStrategy {
     }
 
     // CONCURRENT PROCESSING
-    public CompletableFuture<List<Team>> formTeamsConcurrently() {
+    public CompletableFuture<List<Team>> formTeamsConcurrently() {    //sequence 5:run team formation
         return CompletableFuture.supplyAsync(() -> {
             System.out.println("\nProcessing team formation in background thread...");
             try {
@@ -105,7 +105,7 @@ public class TeamBuilder implements TeamFormationStrategy {
     }
 
     // ===== ADVANCED CONSTRAINT-BASED DISTRIBUTION =====
-    private void distributeWithAdvancedConstraints(List<Team> teams) {
+    private void distributeWithAdvancedConstraints(List<Team> teams) {  //sequence 5.2-run team formation
         // Phase 1: Distribute leaders first (one per team)
         distributeLeaders(teams);
 
@@ -275,7 +275,6 @@ public class TeamBuilder implements TeamFormationStrategy {
         return (double) totalSkill / participants.size();
     }
 
-
     public void checkRoleDiversity(List<Team> teams) {
         System.out.println("\n=== ROLE DIVERSITY CHECK ===");
         for (Team team : teams) {
@@ -318,7 +317,6 @@ public class TeamBuilder implements TeamFormationStrategy {
                     participantIndex++;
                 }
             }
-
             // Backward pass
             for (int i = teamCount - 1; i >= 0 && participantIndex < participants.size(); i--) {
                 Team team = teams.get(i);
@@ -335,7 +333,7 @@ public class TeamBuilder implements TeamFormationStrategy {
         List<Team> teams = new ArrayList<>();
         for (int i = 0; i < teamCount; i++) {
             String teamId = "T" + (i + 1);
-            String teamName = "Team " + (i + 1);
+            String teamName = "Team " + (i + 1);   // sequence 5.1(run team formation)
             teams.add(new Team(teamId, teamName, teamSize));
         }
         return teams;
@@ -423,11 +421,11 @@ public class TeamBuilder implements TeamFormationStrategy {
         }
     }
 
-    public int getTeamSize() {
+    public int getTeamSize() {   // sequence no 3(run team formation)
         return teamSize;
     }
 
-    public int getParticipantCount() {
+    public int getParticipantCount() {    // sequence no 4(run team formation)
         return participants.size();
     }
 

@@ -106,7 +106,7 @@ public class Main {
                         }
                         break;
                     case "3":
-                        currentTeams = organizer.runTeamFormation();
+                        currentTeams = organizer.runTeamFormation();   // sequence no:2( run team formation)
                         break;
                     case "4":
                         organizer.runTeamFormationConcurrently();
