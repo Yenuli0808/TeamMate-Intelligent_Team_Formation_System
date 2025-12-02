@@ -109,16 +109,16 @@ public class Main {
                         currentTeams = organizer.runTeamFormation();   // sequence no:2( run team formation)
                         break;
                     case "4":
-                        organizer.runTeamFormationConcurrently();
+                        organizer.runTeamFormationConcurrently();      // sequence no:3( run team formation)
                         System.out.println("Team formation running in background...");
                         break;
                     case "5":
-                        organizer.viewFormationResults();
+                        organizer.viewFormationResults();   //  sequence 2(view formation result)
                         break;
                     case "6":
                         System.out.print("Enter output file name (e.g., my_teams.csv): ");
                         String outputFile = scanner.nextLine().trim();
-                        organizer.saveTeams(outputFile);
+                        organizer.saveTeams(outputFile);      //sequence 2(save teams)
                         break;
                     case "7":
                         organizer.generateAdvancedReport();
@@ -141,7 +141,7 @@ public class Main {
         }
     }
 
-    private static void participantPortal() {
+    private static void participantPortal() {    //sequence 2:(view team assignment)
         System.out.println("===== PARTICIPANT PORTAL =====");
         System.out.println("1. Complete Survey");
         System.out.println("2. View Team Assignment");
@@ -154,7 +154,7 @@ public class Main {
                 completeSurvey();
                 break;
             case "2":
-                viewTeamAssignment();
+                viewTeamAssignment();    //sequence 3(view team assignment)
                 break;
             default:
                 System.out.println("Invalid choice.");
@@ -435,36 +435,40 @@ public class Main {
         }
     }
 
-    private static void viewTeamAssignment(){
+    private static void viewTeamAssignment(){       //sequence 3(view team assignment)
         System.out.println("===== VIEW TEAM ASSIGNMENT =====");
 
         // Check if teams are available
-        if (currentTeams == null || currentTeams.isEmpty()) {
+        if (currentTeams == null || currentTeams.isEmpty()) {  //sequence 3.1(view team assignment)
             System.out.println("No teams have been formed yet.");
             System.out.println("Please ask the organizer to run team formation first.");
             return;
         }
 
         // Initialize participant portal
-        ParticipantPortal portal = new ParticipantPortal();
-        portal.initializeData(currentTeams, currentParticipants);
+        ParticipantPortal portal = new ParticipantPortal();   //sequence 3.2(view team assignment)
+        portal.initializeData(currentTeams, currentParticipants);   //sequence 3.3(view team assignment)
 
         //Get ALL participant IDs from CSV file (including those not in current teams)
+        //sequence 3.4(view team assignment)
         List<String> allParticipantIdsInSystem = currentParticipants.stream()
                 .map(Participant::getId)
                 .collect(Collectors.toList());
-        List<String> participantsWithTeams = new ArrayList<>(portal.getParticipantTeams().keySet());
+        List<String> participantsWithTeams = new ArrayList<>(portal.getParticipantTeams().keySet());    //sequence 3.4.1(view team assignment)
 
         while(true){
+            //sequence 3.5(view team assignment)
             System.out.print("\nEnter Participant ID (e.g., P001) or 'exit' to quit: ");
             String searchInput = scanner.nextLine().trim();
 
+            //sequence 3.5.1(view team assignment)
             if (searchInput.equalsIgnoreCase("exit")) {
                 System.out.println("Returning to main menu...");
                 return;
             }
 
             // Validate ID format
+            //sequence 3.5.2, 3.5.2.1(view team assignment)
             if (!isValidParticipantIdFormat(searchInput)) {
                 System.out.println("Invalid ID format! Must start with 'P' followed by numbers (e.g., P001, P102)");
                 showAvailableParticipants(participantsWithTeams, allParticipantIdsInSystem);
@@ -473,6 +477,7 @@ public class Main {
             String formattedId = searchInput.toUpperCase();
 
             // SCENARIO 1: Participant NOT in CSV (haven't completed survey)
+            //sequence 3.5.3 (view team assignment)
             if(!allParticipantIdsInSystem.contains(formattedId)){
                 System.out.println("\nParticipant ID '" + formattedId + "' not found in system.");
                 System.out.println("This participant has not completed the survey yet.");
@@ -490,6 +495,7 @@ public class Main {
             }
 
             // SCENARIO 2: Participant in CSV but NO team assignment
+            //sequence 3.5.4 (view team assignment)
             if (!participantsWithTeams.contains(formattedId)){
                 System.out.println("\n Participant '" + formattedId + "' found in system (survey completed).");
                 System.out.println(" But no team assignment found for this participant.");
@@ -513,6 +519,7 @@ public class Main {
             }
 
             // SCENARIO 3: Participant has team assignment - SUCCESS!
+            //sequence 3.5.5 (view team assignment)
             List<Participant> foundParticipants = portal.findParticipant(formattedId);
             if(!foundParticipants.isEmpty()){
                 Participant participant = foundParticipants.get(0);

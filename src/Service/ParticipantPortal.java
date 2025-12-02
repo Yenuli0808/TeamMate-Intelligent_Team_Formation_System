@@ -73,13 +73,14 @@ public class ParticipantPortal {
         return team;
     }
 
-    public String getTeamAssignmentDetails(String participantId) {
+    public String getTeamAssignmentDetails(String participantId) {   //sequence 3.5.5.2(view team assignment)
         try{
-            Team team = viewTeamAssignment(participantId);
+            Team team = viewTeamAssignment(participantId);     //sequence 3.5.5.2.2(view team assignment)
             Participant participant = allParticipants.get(participantId.toUpperCase());
 
             if (participant == null) {
                 // Try to find participant with different case
+                //sequence 3.5.5.2.3(view team assignment)
                 participant = allParticipants.entrySet().stream()
                         .filter(entry -> entry.getKey().equalsIgnoreCase(participantId))
                         .map(Map.Entry::getValue)
@@ -90,13 +91,14 @@ public class ParticipantPortal {
                     throw new IllegalArgumentException("Participant not found: " + participantId);
                 }
             }
-            return formatTeamDetailsForParticipant(team,participant);
+            return formatTeamDetailsForParticipant(team,participant);    //sequence 3.5.5.2.4(view team assignment)
         }
         catch (Exception e){
             throw new IllegalArgumentException("Cannot get team assignment: " + e.getMessage());
         }
     }
 
+    //sequence 3.5.5.2.4(view team assignment)
     private String formatTeamDetailsForParticipant(Team team,Participant participant) {
         StringBuilder details = new StringBuilder();
 
@@ -106,6 +108,7 @@ public class ParticipantPortal {
         details.append("Average Team Skill: ").append(String.format("%.1f", team.getAverageSkill())).append("\n\n");
 
         //Participant information
+        //sequence 3.5.5.2.4.1(view team assignment)
         details.append("YOUR INFORMATION:\n");
         details.append("  - ").append(participant.toDisplayString()).append("\n\n");
 
@@ -115,20 +118,23 @@ public class ParticipantPortal {
                 .filter(member -> !member.getId().equalsIgnoreCase(participant.getId()))
                 .collect(Collectors.toList());
 
+        //sequence 3.5.5.2.4.2(view team assignment)
         if (teammates.isEmpty()) {
             details.append("  No other team members assigned yet.\n");
         } else {
             for (Participant teammate : teammates) {
-                details.append("  - ").append(teammate.toDisplayString()).append("\n");
+                details.append("  - ").append(teammate.toDisplayString()).append("\n");   //sequence 3.5.5.2.4.3(view team assignment)
             }
         }
 
         //Team compositions
+        //sequence 3.5.5.2.4.4, 3.5.5.2.4.5(view team assignment)
         details.append("\nTEAM COMPOSITION:\n");
         details.append("  Games: ").append(team.getUniqueGames()).append("\n");
         details.append("  Roles: ").append(team.getUniqueRoles()).append("\n");
 
         //Personality Distributions
+        //sequence 3.5.5.2.4.6-3.5.5.2.4.8(view team assignment)
         int leaders = team.countPersonalityType(Gaming_Club_Model.PersonalityType.LEADER);
         int balanced = team.countPersonalityType(Gaming_Club_Model.PersonalityType.BALANCED);
         int thinkers = team.countPersonalityType(Gaming_Club_Model.PersonalityType.THINKER);

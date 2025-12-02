@@ -71,7 +71,7 @@ public class Organizer extends BaseEntity {
      * Organizer initiates the team formation process
      */
     public List<Team> runTeamFormation() {
-        if (teamBuilder == null) {     //sequence no 2.1(run team formation)
+        if (teamBuilder == null) {     //sequence no 2(run team formation)
             throw new IllegalStateException("Please set formation parameters first");
         }
         if (currentParticipants == null || currentParticipants.isEmpty()) {   //sequence no 2.2(run team formation)
@@ -80,7 +80,7 @@ public class Organizer extends BaseEntity {
 
         System.out.println("\nORGANIZER ACTION: Running team formation algorithm...");
 
-        this.currentTeams = teamBuilder.formAdvancedTeams();  // sequence no 5: run team formation
+        this.currentTeams = teamBuilder.formAdvancedTeams();  // sequence no 2.1, 2.3: run team formation
 
         // Check if we need to use advanced for better constraints
         if (!meetsMinimumConstraints(currentTeams)) {
@@ -88,18 +88,20 @@ public class Organizer extends BaseEntity {
             this.currentTeams = teamBuilder.formAdvancedTeams();
         }
 
-        teamBuilder.checkRoleDiversity(currentTeams);
+        teamBuilder.checkRoleDiversity(currentTeams);   //sequence no 2.4: run team formation
         System.out.println("SUCCESS: Formed " + currentTeams.size() + " balanced teams");
         return currentTeams;
     }
 
-    private boolean meetsMinimumConstraints(List<Team> teams) {
+    private boolean meetsMinimumConstraints(List<Team> teams) {    // sequence no 2.2: run team formation
         for (Team team : teams) {
             // Check role diversity
+            // sequence no 2.2.1: run team formation
             if (team.getUniqueRoles().size() < 3) {
                 return false;
             }
             // Check basic personality mix
+            // sequence no 2.2.2: run team formation
             if (team.countPersonalityType(PersonalityType.LEADER) > 2 ||
                     team.countPersonalityType(PersonalityType.THINKER) == 0) {
                 return false;
@@ -115,7 +117,7 @@ public class Organizer extends BaseEntity {
 
         System.out.println("Starting team formation in background thread...");
 
-        teamBuilder.formTeamsConcurrently().thenAccept(teams -> {
+        teamBuilder.formTeamsConcurrently().thenAccept(teams -> {     //sequence 3.1, 3.1.2:(run team formation)
             synchronized (this) {
                 this.currentTeams = teams;
             }
@@ -128,8 +130,8 @@ public class Organizer extends BaseEntity {
      * Organizer reviews the formed teams
      */
     public void viewFormationResults() {
-        if (currentTeams == null || currentTeams.isEmpty()) {
-            System.out.println("No teams available to display");
+        if (currentTeams == null || currentTeams.isEmpty()) {   //sequence 2.1(view team formation result)
+            System.out.println("No teams available to display"); //sequence 2.1.1(view team formation result)
             return;
         }
 
@@ -137,13 +139,13 @@ public class Organizer extends BaseEntity {
         System.out.println("=== TEAM FORMATION RESULTS ===");
         for (int i = 0; i < currentTeams.size(); i++) {
             Team team = currentTeams.get(i);
-            System.out.println("\n" + team.toDisplayString());
-            System.out.println("Games: " + team.getUniqueGames());
-            System.out.println("Roles: " + team.getUniqueRoles());
+            System.out.println("\n" + team.toDisplayString());  //sequence 2.2.2, 2.2.2.1(view formation results)
+            System.out.println("Games: " + team.getUniqueGames());  //sequence 2.2.3, 2.2.3.1(view formation results)
+            System.out.println("Roles: " + team.getUniqueRoles());  //sequence 2.2.4, 2.2.4.1(view formation results)
             System.out.println("Personalities: " +
                     team.countPersonalityType(PersonalityType.LEADER) + " Leaders, " +
                     team.countPersonalityType(PersonalityType.BALANCED) + " Balanced, " +
-                    team.countPersonalityType(PersonalityType.THINKER) + " Thinkers");
+                    team.countPersonalityType(PersonalityType.THINKER) + " Thinkers");  //sequence 2.2.5.1...4(view formation results)
         }
     }
 
@@ -158,7 +160,7 @@ public class Organizer extends BaseEntity {
 
         try {
             System.out.println("\nORGANIZER ACTION: Saving teams to CSV...");
-            csvHandler.saveTeamsToCSV(currentTeams, filename);
+            csvHandler.saveTeamsToCSV(currentTeams, filename);   //sequence 2.2(save teams)
             System.out.println("SUCCESS: Saved " + currentTeams.size() + " teams to " + filename);
         } catch (Exception e) {
             System.out.println("FAILED: Save teams - " + e.getMessage());

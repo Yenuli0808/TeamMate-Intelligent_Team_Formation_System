@@ -266,19 +266,19 @@ public class CSVHandler {
 
     //Save teams to csv
     public void saveTeamsToCSV(List<Team> teams, String filename) throws IOException {
-        saveTeamsToCSV(FileSource.LOCAL_FILE, teams, filename);
+        saveTeamsToCSV(FileSource.LOCAL_FILE, teams, filename);   //sequence 2.2.1(save teams)
     }
 
     public void saveTeamsToCSV(FileSource source, List<Team> teams, String filePath) throws IOException {
-        if (teams == null || teams.isEmpty()) {
+        if (teams == null || teams.isEmpty()) {     //sequence 2.1,2.1.1(save teams)
             throw new IllegalArgumentException("No teams to save");
         }
 
-        String actualPath = resolveFilePath(source, filePath);
+        String actualPath = resolveFilePath(source, filePath);    //sequence 2.2.1.1(save teams)
         logger.info("Saving " + teams.size() + " teams to: " + actualPath);
         System.out.println("Saving teams to: " + actualPath);
 
-        saveTeamsToFile(teams, actualPath);
+        saveTeamsToFile(teams, actualPath);   //sequence 2.2.1.2(save teams)
     }
 
     private void saveTeamsToFile(List<Team> teams, String filename) throws IOException {
@@ -301,7 +301,7 @@ public class CSVHandler {
 
             for (Team team : teams) {
                 try {
-                    String csvLine = formatTeamForCSV(team);
+                    String csvLine = formatTeamForCSV(team);  //sequence:2.2.1.2.1(save teams)
                     writer.println(csvLine);
                 } catch (Exception e) {
                     logger.warning("Failed to write team " + team.getId() + ": " + e.getMessage());
@@ -310,7 +310,7 @@ public class CSVHandler {
             }
 
             System.out.println("Successfully saved " + teams.size() + " teams to: " + filename);
-            logger.info("Successfully saved " + teams.size() + " teams to " + filename);
+            logger.info("Successfully saved " + teams.size() + " teams to " + filename);   //sequence 2.3.1(save teams)
         }
         catch (IOException e){
             logger.severe("Failed to save teams to CSV: " + e.getMessage());
@@ -321,6 +321,7 @@ public class CSVHandler {
     private String formatTeamForCSV(Team team) {
         try {
             // Create members list
+            //sequence:2.2.1.2.1.1(save teams)
             String members = String.join(";",
                     team.getMembers().stream()
                             .map(Participant::getId)
@@ -328,13 +329,13 @@ public class CSVHandler {
             );
             // Create personality distribution
             String personalityDist = String.format("Leaders:%d-Balanced:%d-Thinkers:%d",
-                    team.countPersonalityType(PersonalityType.LEADER),
-                    team.countPersonalityType(PersonalityType.BALANCED),
-                    team.countPersonalityType(PersonalityType.THINKER)
+                    team.countPersonalityType(PersonalityType.LEADER),    //sequence:2.2.1.2.1.2(save teams)
+                    team.countPersonalityType(PersonalityType.BALANCED),  //sequence:2.2.1.2.1.3(save teams)
+                    team.countPersonalityType(PersonalityType.THINKER)    //sequence:2.2.1.2.1.4(save teams)
             );
             // Create games and roles lists
-            String games = String.join(";", team.getUniqueGames());
-            String roles = String.join(";", team.getUniqueRoles());
+            String games = String.join(";", team.getUniqueGames());  //sequence:2.2.1.2.1.5(save teams)
+            String roles = String.join(";", team.getUniqueRoles());  //sequence:2.2.1.2.1.6(save teams)
 
             return String.format("%s,%s,%s,%.2f,%s,%s,%s",
                     team.getId(),
@@ -353,12 +354,13 @@ public class CSVHandler {
 
     public void exportParticipantsToCSV(List<Participant> participants, String filename) throws IOException {
         if (participants == null || participants.isEmpty()) {
-            throw new IllegalArgumentException("No participants to export");
+            throw new IllegalArgumentException("No participants to export");  //sequence 2.2.1.2.2(save teams)
         }
 
         try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
             // Write header
-            writer.println("ID,Name,Email,Phone,PreferredGame,SkillLevel,PreferredRole,PersonalityScore,PersonalityType");
+            //sequence 2.2.1.2.3(save teams)
+            writer.println("ID,Name,Email,Phone,PreferredGame,SkillLevel,PreferredRole,PersonalityScore,PersonalityType");   //
 
             // Write participant data
             for (Participant participant : participants) {

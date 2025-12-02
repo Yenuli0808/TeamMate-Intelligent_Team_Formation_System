@@ -13,7 +13,7 @@ public class Team extends BaseEntity implements Formattable {
     private final int maxSize;
 
     public Team(String teamId, String teamName, int maxSize) {
-        super(teamId, teamName);
+        super(teamId, teamName);           //sequence 2.1.1.1.1(run team formation)
         this.maxSize = maxSize;
         this.members = new ArrayList<>();
     }

@@ -61,7 +61,7 @@ public class TeamBuilder implements TeamFormationStrategy {
 
     public List<Team> formAdvancedTeams() {
         int teamCount = (int) Math.ceil((double) this.participants.size() / teamSize);
-        List<Team> teams = createEmptyTeams(teamCount);  // sequence 5.1: run team formation
+        List<Team> teams = createEmptyTeams(teamCount);  // sequence 2.1.1, 2.3.1, 3.1.1.1.1: run team formation
 
         System.out.println("Applying Advanced Constraints:");
         System.out.println("1. One leader per team maximum");
@@ -70,19 +70,19 @@ public class TeamBuilder implements TeamFormationStrategy {
         System.out.println("4. Balanced personality mix");
 
         // Advanced distribution with constraints
-        distributeWithAdvancedConstraints(teams);
+        distributeWithAdvancedConstraints(teams);   //sequence 2.1.2, 2.3.2(run team formation)
         return teams;
     }
 
     // CONCURRENT PROCESSING
-    public CompletableFuture<List<Team>> formTeamsConcurrently() {    //sequence 5:run team formation
-        return CompletableFuture.supplyAsync(() -> {
+    public CompletableFuture<List<Team>> formTeamsConcurrently() {
+        return CompletableFuture.supplyAsync(() -> {   // sequence 3.1.1(run team formation)
             System.out.println("\nProcessing team formation in background thread...");
             try {
                 // Simulate processing time for large datasets
                 Thread.sleep(500);
                 System.out.println("✓ Background processing completed\n");
-                return formAdvancedTeams();
+                return formAdvancedTeams();   //sequence 3.1.1.1(run team formation)
             } catch (InterruptedException e) {
                 throw new RuntimeException("Team formation interrupted", e);
             }
@@ -105,25 +105,25 @@ public class TeamBuilder implements TeamFormationStrategy {
     }
 
     // ===== ADVANCED CONSTRAINT-BASED DISTRIBUTION =====
-    private void distributeWithAdvancedConstraints(List<Team> teams) {  //sequence 5.2-run team formation
+    private void distributeWithAdvancedConstraints(List<Team> teams) {  //sequence 2.1.2, 2.3.2(run team formation)
         // Phase 1: Distribute leaders first (one per team)
-        distributeLeaders(teams);
+        distributeLeaders(teams);     //sequence 2.1.2.1, 2.3.2.1(run team formation)
 
         // Phase 2: Distribute remaining participants with constraints
-        distributeRemainingWithConstraints(teams);
+        distributeRemainingWithConstraints(teams);  //sequence 2.1.2.2, 2.3.2.2(run team formation)
     }
 
     private void distributeLeaders(List<Team> teams) {
         List<Participant> leaders = participants.stream()
-                .filter(p -> p.getPersonalityType() == PersonalityType.LEADER)
+                .filter(p -> p.getPersonalityType() == PersonalityType.LEADER)    //sequence 2.1.2.1.1, 2.3.2.1.1(run team formation)
                 .toList();
 
-        int teamIndex = 0;
+        int teamIndex = 0;     //sequence 2.1.2.1.2, 2.3.2.1.2(run team formation)
         for (Participant leader : leaders) {
             if (teamIndex < teams.size()) {
                 Team team = teams.get(teamIndex);
                 if (!team.isFull() && constraints.satisfiesAllConstraints(team, leader)) {
-                    team.addMember(leader);
+                    team.addMember(leader);   //sequence 2.1.2.1.3, 2.3.2.1.2(run team formation)
                     teamIndex++;
                 }
             }
@@ -132,16 +132,18 @@ public class TeamBuilder implements TeamFormationStrategy {
 
     private void distributeRemainingWithConstraints(List<Team> teams) {
         List<Participant> remaining = participants.stream()
-                .filter(p -> !isInAnyTeam(teams, p))
-                .sorted((p1, p2) -> Integer.compare(p2.getSkillLevel(), p1.getSkillLevel())) // High skill first
+                .filter(p -> !isInAnyTeam(teams, p))   //sequence 2.1.2.2.1, 2.3.2.2.1(run team formation)
+                .sorted((p1, p2) -> Integer.compare(p2.getSkillLevel(), p1.getSkillLevel())) // High skill first   //sequence 2.1.2.2.1.1, 2.3.2.2.1.1(run team formation)
                 .toList();
 
         for (Participant player : remaining) {
             Team bestTeam = findOptimalTeam(teams, player);
             if (bestTeam != null) {
-                bestTeam.addMember(player);
+                bestTeam.addMember(player);  //sequence 2.1.2.2.3, 2.3.2.2.3(run team formation)
             } else {
                 // Fallback: add to first available team
+                //sequence 2.1.2.2.4, 2.1.2.2.4.1(run team formation)
+                //sequence 2.3.2.2.4, 2.3.2.2.4.1(run team formation)
                 teams.stream()
                         .filter(team -> !team.isFull())
                         .findFirst()
@@ -150,7 +152,7 @@ public class TeamBuilder implements TeamFormationStrategy {
         }
     }
 
-    private Team findOptimalTeam(List<Team> teams, Participant player) {
+    private Team findOptimalTeam(List<Team> teams, Participant player) {   //sequence 2.1.2.2.2, 2.3.2.2.2(run team formation)
         // Score teams based on how well they match constraints
         Map<Team, Integer> teamScores = new HashMap<>();
 
@@ -329,11 +331,11 @@ public class TeamBuilder implements TeamFormationStrategy {
     }
 
     //UTILITY METHODS
-    private List<Team> createEmptyTeams(int teamCount) {
+    private List<Team> createEmptyTeams(int teamCount) {  //sequence 2.1.1.1(run team formation)
         List<Team> teams = new ArrayList<>();
         for (int i = 0; i < teamCount; i++) {
             String teamId = "T" + (i + 1);
-            String teamName = "Team " + (i + 1);   // sequence 5.1(run team formation)
+            String teamName = "Team " + (i + 1);
             teams.add(new Team(teamId, teamName, teamSize));
         }
         return teams;
