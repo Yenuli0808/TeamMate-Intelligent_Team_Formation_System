@@ -46,23 +46,26 @@ public class Organizer extends BaseEntity {
      * Organizer sets team size and formation constraints
      */
     public void setFormationParameters(int teamSize) {
-        // sequence msg 4-6: validation against constants
+        // sequence msg 4(set team formation parameters)
         if (currentParticipants == null || currentParticipants.isEmpty()) {
             throw new IllegalStateException("Please upload participant data first");
         }
-
-        if(teamSize < Constant.MIN_TEAM_SIZE){  // sequence :5,7.1(set team formation parameters)
+        // sequence :5.1(set team formation parameters)
+        if(teamSize < Constant.MIN_TEAM_SIZE){
             throw new IllegalArgumentException("Team size cannot be less than "+Constant.MIN_TEAM_SIZE);
         }
-        if(teamSize > Constant.MAX_TEAM_SIZE){  //sequence :6,7.2(set team formation parameters)
+        // sequence :6.1(set team formation parameters)
+        if(teamSize > Constant.MAX_TEAM_SIZE){
             throw new IllegalArgumentException("Team size cannot be greater than "+Constant.MAX_TEAM_SIZE);
         }
+        // sequence :7(set team formation parameters)
         if (teamSize > currentParticipants.size()) {
             throw new IllegalArgumentException("Team size (" + teamSize + ") cannot be greater than number of participants (" + currentParticipants.size() + ")");
         }
 
+        //sequence msg:9(set team formation parameters)
         System.out.println("\nORGANIZER ACTION: Setting formation parameters...");
-        this.teamBuilder = new TeamBuilder(currentParticipants, teamSize);    //sequence msg:7
+        this.teamBuilder = new TeamBuilder(currentParticipants, teamSize);
         System.out.println("SUCCESS: Team size set to " + teamSize + " players per team");
     }
 

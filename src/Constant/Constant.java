@@ -12,8 +12,8 @@ public final class Constant {
     public static final int MAX_SKILL_LEVEL = 10;
 
     //Team Formation Constraints
-    public static final int MIN_TEAM_SIZE = 2;
-    public static final int MAX_TEAM_SIZE = 10;
+    public static final int MIN_TEAM_SIZE = 2;      //sequence msg: 5(set team formation para meters)
+    public static final int MAX_TEAM_SIZE = 10;     //sequence msg: 6(set team formation para meters)
     public static final int MAX_SAME_GAME_PER_TEAM = 2;
     public static final int MIN_DIFFERENT_ROLES = 3;
 

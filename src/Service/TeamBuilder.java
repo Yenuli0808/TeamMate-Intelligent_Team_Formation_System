@@ -19,16 +19,19 @@ public class TeamBuilder implements TeamFormationStrategy {
     private ExecutorService executor;
 
     public TeamBuilder(List<Participant> participants, int teamSize) {
-        // Message 7.1-7.2: Internal validation( set team formation parameters)
+        // Message 8.1:( set team formation parameters)
         if(participants == null || participants.isEmpty()) {
             throw new IllegalArgumentException("Participants cannot be empty");
         }
+        // Message 8.2.1:( set team formation parameters)
         if(teamSize < Constant.MIN_TEAM_SIZE) {
             throw new IllegalArgumentException("Team size cannot be less than " + Constant.MIN_TEAM_SIZE + ". Minimum team size is " + Constant.MIN_TEAM_SIZE + " players.");
         }
+        //sequence msg: 8.3.1(set team formation para meters)
         if(teamSize > Constant.MAX_TEAM_SIZE) {
             throw new IllegalArgumentException("Team size cannot be greater than " + Constant.MAX_TEAM_SIZE + ". Maximum team size is " + Constant.MAX_TEAM_SIZE + " players.");
         }
+        // sequence:8.4(set team formation parameters)
         if(teamSize > participants.size()) {
             throw new IllegalArgumentException("Team size cannot be greater than number of participants");
         }
