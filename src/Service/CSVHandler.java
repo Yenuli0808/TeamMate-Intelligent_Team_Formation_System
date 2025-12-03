@@ -22,16 +22,16 @@ public class CSVHandler {
 
     //Load participants from CSV file with automatic file location detection
     public List<Participant> loadParticipants(String filename) throws IOException {
-        return loadParticipants(FileSource.LOCAL_FILE, filename);   //sequence 1.3.2
+        return loadParticipants(FileSource.LOCAL_FILE, filename);   //sequence 1.3.2,  //sequence 3.14.2.1(complete survey)
     }
 
     public List<Participant> loadParticipants(FileSource source, String filePath) throws IOException {
         logger.info("Loading participants from: " + filePath + " (Source: " + source + ")");
 
-        String actualPath = resolveFilePath(source, filePath);   //sequence 1.3.1
+        String actualPath = resolveFilePath(source, filePath);   //sequence 1.3.1,   //sequence 3.14.2.1.1(complete survey)
         System.out.println("Loading from: " + actualPath);
 
-        return loadParticipantsFromFile(actualPath);
+        return loadParticipantsFromFile(actualPath);    //sequence 3.14.2.1.2(complete survey)
     }
 
     private String resolveFilePath(FileSource source, String filePath) {
@@ -430,18 +430,22 @@ public class CSVHandler {
         appendParticipantToCSV(FileSource.LOCAL_FILE,participant,filename);
     }
 
-    public void appendParticipantToCSV(FileSource source, Participant participant, String filePath) throws IOException {
-        String actualPath = resolveFilePath(source,filePath);
+    public void appendParticipantToCSV(FileSource source, Participant participant, String filePath) throws IOException {    //sequence 3.15.1(complete survey)
+        String actualPath = resolveFilePath(source,filePath);     //sequence 3.15.1.1(complete survey)
 
         File file = new File(actualPath);
 
+        //sequence 3.15.1.2(complete survey)
         if (!file.exists()) {
             createNewCSVWithHeader(actualPath);   //this will create file if it doesn't exist
         }
+
+        //sequence 3.15.1.3(complete survey)
         if(!participant.validate()){
             throw new IllegalArgumentException("Participant data is invalid");
         }
 
+        //sequence 3.15.1.4(complete survey)
         try(FileWriter fw = new FileWriter(actualPath,true);
         PrintWriter writer = new PrintWriter(fw)) {
             writer.println(participant.toCSVString());
@@ -486,7 +490,7 @@ public class CSVHandler {
 
     public List<String> getAllParticipantIds(String filename) throws IOException {
         List<String> ids = new ArrayList<>();
-        String actualPath = resolveFilePath(FileSource.LOCAL_FILE,filename);
+        String actualPath = resolveFilePath(FileSource.LOCAL_FILE,filename);    //sequence 5.1(complete survey)
         File file = new File(actualPath);
 
         if (!file.exists()) {
@@ -512,10 +516,10 @@ public class CSVHandler {
      * Update existing participant in CSV file
      */
     public void updateParticipantInCSV(Participant updatedParticipant, String filename) throws IOException {
-        String actualPath = resolveFilePath(FileSource.LOCAL_FILE, filename);
+        String actualPath = resolveFilePath(FileSource.LOCAL_FILE, filename);    //sequence 3.14.1(complete survey)
 
         // Read all participants from CSV
-        List<Participant> allParticipants = loadParticipants(actualPath);
+        List<Participant> allParticipants = loadParticipants(actualPath);    //sequence 3.14.2(complete survey)
 
         // Find and replace the participant with same ID
         boolean found = false;
@@ -532,7 +536,7 @@ public class CSVHandler {
         }
 
         // Write all participants back to CSV
-        exportParticipantsToCSV(allParticipants, actualPath);
+        exportParticipantsToCSV(allParticipants, actualPath);    //sequence 3.14.3(complete survey)
         System.out.println("✓ Successfully updated participant: " + updatedParticipant.getId());
     }
 

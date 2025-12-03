@@ -89,6 +89,7 @@ public class TeamBuilder implements TeamFormationStrategy {
         }, executor);
     }
 
+    //sequence 3.17(complete survey)
     public CompletableFuture<Void> processSurveyDataConcurrently(List<Participant> surveyData) {
         return CompletableFuture.runAsync(() -> {
             System.out.println("\nProcessing survey data for " + surveyData.size() + " participants...");

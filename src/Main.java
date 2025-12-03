@@ -151,7 +151,7 @@ public class Main {
 
         switch (choice) {
             case "1":
-                completeSurvey();
+                completeSurvey();        //sequence 3(complete survey)
                 break;
             case "2":
                 viewTeamAssignment();    //sequence 3(view team assignment)
@@ -161,11 +161,12 @@ public class Main {
         }
     }
 
-    private static void completeSurvey() {
+    private static void completeSurvey() {      //sequence 3(complete survey)
         System.out.println("===== COMPLETE SURVEY =====");
 
         try {
             // Check if CSV file exists or create new one
+            //sequence 3.1, 3.1.1(complete survey)
             File csvFile = new File(PARTICIPANTS_CSV);
             if (!csvFile.exists()) {
                 System.out.println("Creating new participants database...");
@@ -174,7 +175,7 @@ public class Main {
             // Get existing participant IDs to avoid duplicates
             List<String> existingIds = new ArrayList<>();
             try {
-                existingIds = csvHandler.getAllParticipantIds(PARTICIPANTS_CSV);
+                existingIds = csvHandler.getAllParticipantIds(PARTICIPANTS_CSV);    //sequence 3.2(complete survey)
             } catch (IOException e) {
                 System.out.println("Could not read existing participants, starting fresh...");
             }
@@ -182,19 +183,20 @@ public class Main {
             // Participant ID with validation
             String id;
             while (true) {
+                //sequence 3.3(complete survey)
                 System.out.print("Enter Participant ID (e.g., P102): ");
                 id = scanner.nextLine().trim().toUpperCase();
 
-                if (!id.matches("P\\d+")) {
+                if (!id.matches("P\\d+")) {   //sequence 3.3.1(complete survey)
                     System.out.println("Invalid ID format! Must start with 'P' followed by numbers (e.g., P102)");
                     continue;
                 }
-                if (id.isEmpty()) {
+                if (id.isEmpty()) {    //sequence 3.3.2(complete survey)
                     System.out.println("Participant ID cannot be empty. Please try again.");
                     continue;
                 }
 
-                if (existingIds.contains(id)) {
+                if (existingIds.contains(id)) {  //sequence 3.3.3(complete survey)
                     System.out.println("--------------------------------------------------------------------");
                     System.out.println("Participant ID '" + id + "' already exists in system");
                     System.out.println("This will UPDATE your existing survey information.");
@@ -202,6 +204,7 @@ public class Main {
 
                     String updateChoice = scanner.nextLine().trim();
 
+                    //sequence 3.3.3.2.1(complete survey)
                     if(!updateChoice.equalsIgnoreCase("yes") && !updateChoice.equalsIgnoreCase("y")){
                         System.out.println("Update cancelled. Returning to menu...");
                         return;
@@ -214,13 +217,15 @@ public class Main {
             //Participant name validation
             String name;
             while (true) {
-                System.out.print("Enter Name(format: Participant_XXX where XXX is numbers): ");
+                System.out.print("Enter Name(format: Participant_XXX where XXX is numbers): ");   //sequence 3.4(complete survey)
                 name = scanner.nextLine().trim();
 
+                //sequence 3.4.1(complete survey)
                 if (name.isEmpty()) {
                     System.out.println("\nName cannot be empty. Please try again.");
                     continue;
                 }
+                //sequence 3.4.2(complete survey)
                 if (!name.matches("Participant_\\d+")) {
                     System.out.println("\nInvalid name format! Must be: Participant_XXX (e.g., Participant_101)");
                     System.out.println("Your ID is: " + id + " so name should be: Participant_" + id.substring(1)+"\n");
@@ -229,6 +234,7 @@ public class Main {
                 String nameNumber = name.replace("Participant_", "");
                 String idNumber = id.replace("P", "");
 
+                //sequence 3.4.3(complete survey)
                 if (!nameNumber.equals(idNumber)) {
                     System.out.println("----------------------------------------------------------------------");
                     System.out.println("Name number doesn't match Participant ID!");
@@ -242,14 +248,16 @@ public class Main {
             //Email validation
             String email;
             while (true) {
-                System.out.print("Enter Email(format: userXXX@university.edu): ");
+                System.out.print("Enter Email(format: userXXX@university.edu): ");   //sequence 3.5(complete survey)
                 email = scanner.nextLine().trim();
 
+                //sequence 3.5.1(complete survey)
                 if (email.isEmpty()) {
                     System.out.println("\nEmail cannot be empty. Please try again.");
                     continue;
                 }
                 // Validate email format: user + numbers + @university.edu
+                //sequence 3.5.2(complete survey)
                 if (!email.matches("user\\d+@university\\.edu")) {
                     System.out.println("\nInvalid email format! Must be: userXXX@university.edu (e.g., user101@university.edu)");
                     System.out.println("\nYour ID is: " + id + " so email should be: user" + id.substring(1) + "@university.edu");
@@ -259,6 +267,7 @@ public class Main {
                 String emailNumber = email.replace("user", "").replace("@university.edu", "");
                 String idNumber = id.replace("P", "");
 
+                //sequence 3.5.3(complete survey)
                 if (!emailNumber.equals(idNumber)) {
                     System.out.println("-----------------------------------------------------------------------------------");
                     System.out.println("Email number doesn't match Participant ID!");
@@ -270,6 +279,7 @@ public class Main {
             }
 
             //Phone Number Validation
+            //sequence 3.6(complete survey)
             String phone;
             while (true) {
                 System.out.print("Enter Phone Number: ");
@@ -284,6 +294,8 @@ public class Main {
             System.out.println("\n--- Personality Survey ---");
             System.out.println("Rate each statement from 1 (Strongly Disagree) to 5 (Strongly Agree)");
 
+
+            //sequence 3.7(complete survey)
             int[] responses = new int[5];
             String[] questions = {
                     "I enjoy taking the lead and guiding others during group activities.",
@@ -315,6 +327,7 @@ public class Main {
             }
 
             //Preferred Game Validation
+            //sequence 3.8(complete survey)
             String game;
             while (true) {
                 System.out.print("===========================================================================");
@@ -342,6 +355,7 @@ public class Main {
             }
 
             //Preferred Role Validation
+            //sequence 3.9(complete survey)
             String role;
             while (true) {
                 System.out.print("=======================================================================================================");
@@ -372,6 +386,7 @@ public class Main {
             }
 
             //Skill Level Validation
+            //sequence 3.10(complete survey)
             int skill;
             while (true) {
                 System.out.print("========================================================================================================");
@@ -391,20 +406,20 @@ public class Main {
             }
 
             // Processing Survey
-            int personalityScore = PersonalityClassifier.calculateFromSurvey(responses);
-            PersonalityType personalityType = PersonalityClassifier.classify(personalityScore);
+            int personalityScore = PersonalityClassifier.calculateFromSurvey(responses);     //sequence 3.11(complete survey)
+            PersonalityType personalityType = PersonalityClassifier.classify(personalityScore);     //sequence 3.12(complete survey)
 
             // Creating Participant
-            Participant participant = new Participant(id, name, email, phone, game, skill, role, personalityScore);
+            Participant participant = new Participant(id, name, email, phone, game, skill, role, personalityScore);     //sequence 3.13(complete survey)
 
             // Save OR UPDATE in CSV file
             if (existingIds.contains(id)) {
                 // Update existing participant
-                csvHandler.updateParticipantInCSV(participant, PARTICIPANTS_CSV);
+                csvHandler.updateParticipantInCSV(participant, PARTICIPANTS_CSV);   //sequence 3.14(complete survey)
                 System.out.println("SURVEY UPDATED SUCCESSFULLY!");
             } else {
                 // Add new participant
-                csvHandler.appendParticipantToCSV(participant, PARTICIPANTS_CSV);
+                csvHandler.appendParticipantToCSV(participant, PARTICIPANTS_CSV);   //sequence 3.15(complete survey)
                 System.out.println("SURVEY COMPLETED SUCCESSFULLY!");
             }
 
@@ -420,8 +435,8 @@ public class Main {
             System.out.println("Participant: " + participant.toDisplayString());
             System.out.println("Data saved to: " + PARTICIPANTS_CSV);
 
-            TeamBuilder teamBuilder = new TeamBuilder(List.of(participant),2);
-            teamBuilder.processSurveyDataConcurrently(List.of(participant));
+            TeamBuilder teamBuilder = new TeamBuilder(List.of(participant),2);    //sequence 3.16(complete survey)
+            teamBuilder.processSurveyDataConcurrently(List.of(participant));               //sequence 3.17(complete survey)
 
             // Show what happens next
             System.out.println("\nNext Steps:");

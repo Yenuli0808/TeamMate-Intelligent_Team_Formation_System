@@ -38,7 +38,7 @@ public class Participant extends BaseEntity implements Formattable {
         this.skillLevel = skillLevel;
         this.preferredRole = preferredRole;
         this.personalityScore = personalityScore;
-        this.personalityType= PersonalityClassifier.classify(personalityScore);
+        this.personalityType= PersonalityClassifier.classify(personalityScore);     //sequence 3.13.1(complete survey)
     }
 
     @Override
