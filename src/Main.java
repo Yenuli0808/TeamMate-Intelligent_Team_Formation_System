@@ -576,6 +576,7 @@ public class Main {
         return id != null && id.matches("P\\d+");
     }
 
+    //Testing system performance
     private static void runAllDemonstration() {
         System.out.println("\n=== SYSTEM DEMONSTRATIONS ===");
 
@@ -604,7 +605,8 @@ public class Main {
         for (int score: testScores) {
             try{
                 var personality = PersonalityClassifier.classify(score);
-                System.out.printf("Score %3d -> %-8s(Range: %d-%d)%n",score,personality,personality.getMinScore(),personality.getMaxScore());
+                System.out.printf("Score %3d -> %-8s(Range: %d-%d)%n",score,personality,personality.getMinScore()
+                        ,personality.getMaxScore());
             }catch (IllegalArgumentException e){
                 System.out.printf("Score %3d -> ERROR: %s%n", score, e.getMessage());
             }
@@ -617,11 +619,13 @@ public class Main {
         System.out.println("------------------------------------------");
 
         try{
-            Participant participant1 = new Participant("P001","John Doe","john@university.edu","0731093108","Valorant",8,"Strategist",85);
+            Participant participant1 = new Participant("P001","John Doe","john@university.edu","0731093108",
+                    "Valorant",8,"Strategist",85);
             System.out.println("Participant 1 created: " + participant1);
 
             try{
-                Participant invalid= new Participant("P002","Jane Smith","jane@university.edu","0701053109","CS:G0",15,"Attacker",85);
+                Participant invalid= new Participant("P002","Jane Smith","jane@university.edu","0701053109",
+                        "CS:G0",15,"Attacker",85);
             }catch (IllegalArgumentException e){
                 System.out.println("Rejected Invalid Participant: " + e.getMessage());
             }
@@ -643,7 +647,7 @@ public class Main {
                     new Participant("P003", "Charlie", "charlie@edu.com","0724865213", "DOTA 2", 7, "Defender", 65),
                     new Participant("P004", "Diana", "diana@edu.com","0701053409", "Valorant", 9, "Supporter", 85),
                     new Participant("P005", "Eve", "eve@edu.com","0741065169", "CS:GO", 5, "Coordinator", 70),
-                    new Participant("P006", "Frank", "frank@edu.com","0771053109", "DOTA 2", 8, "Strategist", 90)
+                    new Participant("P006", "Frank", "frank@edu.com","0771053109", "DOTA 2", 8, "Strategist", 68)
             );
             System.out.printf("Forming teams from %d participants...%n", participants.size());
 
@@ -722,12 +726,18 @@ public class Main {
         System.out.println("-------------------------------------");
 
         List<Participant> participants = Arrays.asList(
-                new Participant("P001", "Alice", "alice@edu.com","0711153109", "Valorant", 8, "Strategist", 95),
-                new Participant("P002", "Bob", "bob@edu.com","0721253109", "Valorant", 6, "Attacker", 75),
-                new Participant("P003", "Charlie", "charlie@edu.com","0731353109", "Valorant", 7, "Defender", 65),
-                new Participant("P004", "Diana", "diana@edu.com", "0741453109","CS:GO", 9, "Supporter", 85),
-                new Participant("P005", "Eve", "eve@edu.com","0751553109", "CS:GO", 5, "Coordinator", 92),
-                new Participant("P006", "Frank", "frank@edu.com","0761653109", "DOTA 2", 8, "Strategist", 88)
+                new Participant("P001", "Alice", "alice@edu.com","0711153109", "Valorant", 8,
+                        "Strategist", 95),
+                new Participant("P002", "Bob", "bob@edu.com","0721253109", "Valorant", 6,
+                        "Attacker", 75),
+                new Participant("P003", "Charlie", "charlie@edu.com","0731353109", "Valorant", 7,
+                        "Defender", 65),
+                new Participant("P004", "Diana", "diana@edu.com", "0741453109","CS:GO", 9,
+                        "Supporter", 85),
+                new Participant("P005", "Eve", "eve@edu.com","0751553109", "CS:GO", 5,
+                        "Coordinator", 92),
+                new Participant("P006", "Frank", "frank@edu.com","0761653109", "DOTA 2", 8,
+                        "Strategist", 88)
         );
 
         System.out.println("Using Advanced Algorithm with 3 Simple Rules:");

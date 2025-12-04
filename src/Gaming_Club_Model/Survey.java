@@ -34,5 +34,4 @@ public class Survey {
                 preferredGame, skillLevel, preferredRole, personalityScore
         );
     }
-
 }

@@ -138,5 +138,4 @@ public class Team extends BaseEntity implements Formattable {
     public String getTeamDetails() {
         return toDetailedString();
     }
-
 }

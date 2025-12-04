@@ -28,6 +28,4 @@ public class PersonalityClassifier {
         }
         return sum * 4; // Scale to 100
     }
-
-
 }

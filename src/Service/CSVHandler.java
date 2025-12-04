@@ -539,5 +539,4 @@ public class CSVHandler {
         exportParticipantsToCSV(allParticipants, actualPath);    //sequence 3.14.3(complete survey)
         System.out.println("✓ Successfully updated participant: " + updatedParticipant.getId());
     }
-
 }

@@ -39,8 +39,10 @@ public class CSVHandlerTest {
     @Test
     public void testTeamExport() throws IOException {
         List<Participant> participants = Arrays.asList(
-                new Participant("P001", "Alice", "alice@edu.com", "0711111111", "Valorant", 8, "Strategist", 95),
-                new Participant("P002", "Bob", "bob@edu.com", "0722222222", "CS:GO", 6, "Attacker", 75)
+                new Participant("P001", "Alice", "alice@edu.com", "0711111111",
+                        "Valorant", 8, "Strategist", 95),
+                new Participant("P002", "Bob", "bob@edu.com", "0722222222",
+                        "CS:GO", 6, "Attacker", 75)
         );
 
         TeamBuilder builder = new TeamBuilder(participants,2);
