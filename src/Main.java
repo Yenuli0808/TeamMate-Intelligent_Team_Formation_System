@@ -708,8 +708,8 @@ public class Main {
             List<Team> teams = builder.formBalancedTeams();
 
             System.out.println("Saving teams to output CSV...");
-            csvHandler.saveTeamsToCSV(teams, "formed_teams-.csv");
-            System.out.println("SUCCESS: Saved " + teams.size() + " teams to 'formed_teams-.csv'");
+            csvHandler.saveTeamsToCSV(teams, "formed_teams.csv");
+            System.out.println("SUCCESS: Saved " + teams.size() + " teams to 'formed_teams.csv'");
 
             System.out.println("\nSample of loaded data (first 3 participants):");
             for (int i = 0; i < Math.min(3, participants.size()); i++) {
@@ -804,7 +804,7 @@ public class Main {
             organizer.runTeamFormation();
             organizer.viewFormationResults();
             organizer.generateAdvancedReport();
-            organizer.saveTeams("organized_teams-.csv");
+            organizer.saveTeams("organized_teams.csv");
 
             System.out.println("\n ORGANIZER WORKFLOW COMPLETED!");
         } catch (Exception e) {
@@ -829,8 +829,8 @@ public class Main {
             System.out.println(" Formed: " + teams.size() + " teams");
 
             System.out.println("3. Saving teams to output CSV...");
-            csvHandler.saveTeamsToCSV(teams, "complete_workflow_teams.csv");
-            System.out.println(" Saved: complete_workflow_teams.csv");
+            csvHandler.saveTeamsToCSV(teams, "complete_workflow_of_teams.csv");
+            System.out.println(" Saved: complete_workflow_of_teams.csv");
 
             System.out.println("\n4. Sample Team Output:");
             if (!teams.isEmpty()) {
