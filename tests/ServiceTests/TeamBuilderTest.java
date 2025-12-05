@@ -154,7 +154,4 @@ public class TeamBuilderTest {
         // Verify both strategists were used
         assertEquals("Should use both strategists across teams", 2, totalStrategists);
     }
-
-
-
 }

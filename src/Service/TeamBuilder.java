@@ -3,14 +3,12 @@ package Service;
 import Constant.Constant;
 import Gaming_Club_Model.Participant;
 import Gaming_Club_Model.PersonalityType;
-import Gaming_Club_Model.Survey;
 import Gaming_Club_Model.Team;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 public class TeamBuilder implements TeamFormationStrategy {
     private int teamSize;
