@@ -6,6 +6,8 @@ import Gaming_Club_Model.Participant;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+//defines the rules that must be satisfied when adding a participant to a team during team formation
+
 public class DefaultTeamConstraints implements TeamFormationConstraint {
     private int maxSameGame = 2;
     private int minDifferentRoles = 3;

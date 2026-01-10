@@ -14,7 +14,7 @@ public class TeamBuilder implements TeamFormationStrategy {
     private int teamSize;
     private final List<Participant> participants;
     private TeamFormationConstraint constraints;
-    private ExecutorService executor;
+    private ExecutorService executor;  //enable concurrency
 
     public TeamBuilder(List<Participant> participants, int teamSize) {
         // Message 8.1:( set team formation parameters)

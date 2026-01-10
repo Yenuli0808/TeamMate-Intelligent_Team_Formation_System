@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class ParticipantPortal {
     private Map<String, Team> participantTeams;  // this will map participant ID to Team
 
-    private Map<String, Participant> allParticipants;
+    private Map<String, Participant> allParticipants;  //Stores all participants for lookup
 
     public ParticipantPortal() {
         this.participantTeams = new HashMap<>();
