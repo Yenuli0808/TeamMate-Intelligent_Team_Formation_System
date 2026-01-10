@@ -99,6 +99,7 @@ public class Team extends BaseEntity implements Formattable {
     }
 
 
+    //Prevents external modification of internal list
     public List<Participant> getMembers() {
         return new ArrayList<>(members);
     }
